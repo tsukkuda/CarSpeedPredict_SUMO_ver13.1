@@ -112,6 +112,7 @@ def main():
 
 if __name__ == "__main__":
     print("test_branch")
+    print("test_branch_commit")
     main()
 
 
