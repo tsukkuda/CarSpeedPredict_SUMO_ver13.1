@@ -111,6 +111,7 @@ def main():
     print("time={}s".format(dt_ed-dt_st))
 
 if __name__ == "__main__":
+    print("test_branch")
     main()
 
 
