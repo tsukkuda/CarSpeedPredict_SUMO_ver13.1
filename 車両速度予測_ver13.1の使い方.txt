@@ -1,0 +1,62 @@
+MVLSTMmain.py
+FCProcess
+	-evaluate
+		-Mytools
+			graphdrawer.py
+		-PredEval.py
+	-NNkeras
+		-kerasInit.py
+	-NNMakeDataset
+		-makeDataset3.py
+	-NNModel
+		-NN.py
+		-VLSTM.py
+	-preprocess
+		-cleandata
+			-smoothing.py
+		-Preprocessing.py
+		-Process_train.py
+		-process_cross_validation.py
+		-Process_validation.py
+	-Process_V5MVLSTM.py
+ReadData
+	-TrackedCarData
+	-車両追跡データ
+		-xxxx.csv
+		-yyyy.csv
+	-readDataClass.py
+	-split_data_process.py
+	-tqdm_joblib.py
+(result)
+
+の構造でプログラムとファイルを設置する。実行ファイルはMVLSTMmain.py。
+一度実行するとTrackedCarDataフォルダの中にキャッシュが生成されているので、読み込むcsvを変えるときはキャッシュを必ず削除しておく。
+車両追跡データにエクセルデータ形成py_ver6.1で生成したcsvファイルをまとめて設置する。これが訓練データとなる。
+実行が終わるとresultフォルダの中に学習済みモデル(bestmodel.hdf5)と学習中の損失グラフが出力される。
+csvの読み込みはparallel関数により高速化されている。シミュレーションごとに整列していたデータはごちゃ混ぜとなる。学習時に訓練データはシャッフルされるので、同じことだが、これらにより再度実行しても全く同じ学習モデルは作成されない。そのため学習モデルを複数作成し、交差検証を行わなければ評価結果の信頼性が下がる。鉢嶺が修士で対処中。
+
+[MVLSTMmain.pyについて]
+27行目：評価したいRの半径をリストで指定。指定した値×50のRの半径で評価される。
+32行目：検証するデータの自動運転車両比率。最小1は必須で、1ずつ増やした値を設定すべし。出力結果は設定値に因らずrate1,rate2,rate3...と順に出力されるため、リストを1からしていないとややこしいことになる。
+35行目：hyper_parameterで学習のパラメータを設定する。
+107行目：stepnum。教師データとなる予測先ステップの値を設定する。普通1。変えるとどうなるのか確認していないので。慎重に改変する事。
+24行目：pred_range。評価時に再帰予測を行うstep数だが、現在は入力データの形式が異なるので交差検証を行おうとするとグラフ描画でエラーの原因となる可能性大。
+
+[Process_V5MVLSTM.pyについて]
+27行目：model_Input_Output。学習モデルの入出力次元数を指定。0,1,2のみ指定可能。0で1次元と2次元の両方が作成される。
+109行目：whole_data。学習に使う訓練データの総数を指定。
+113行目：train_date。用意されたcsvはシミュレーション何回分のデータか。
+(whole_data/train_date)が1回のシミュレーションから取得したい訓練データの数。どれか1回のシミュレーションでも訓練データ数が不足していると、学習が開始されない。実行中の画面にそれぞれのシミュレーションから得られる訓練データの個数が表示されているので、訓練データが足りているか目視で確認する。
+
+[process_cross_validation]
+19行目：n_splits。k-分割交差検証のkの大きさ。任意の数を指定して分割可能。なるべく学習データを作成したシミュレーション回数の約数を指定すること。その方が等分される。
+
+[NN.pyについて]
+NNの層構造などを設定する。
+
+実行時に弄るのは上記の部分くらい。
+
+[makeDataset3.pyについて]
+csvデータから平滑化や正規化などを行うユーザ関数が記述されている。
+
+プログラムが多すぎて説明しきれないので、Process_V5MVLSTM.pyを上から解読すると、スムーズに理解が進むと思う。

@@ -1,0 +1,13 @@
+MVLSTMmain.pyのディレクトリに「ReadData」フォルダと「FCProcess」フォルダを置く。
+
+「FCProcess」フォルダの中にProcess_V2MVLSTM.pyと「evaluate」「NNkeras」「NNMakeDataset」「NNModel」「preprocess」フォルダを配置。
+
+evaluateの中に「Mytools」フォルダとPredEval.py。
+Mytoolsの中にgraphdrawer.py。
+
+NNkeraasの中にkerasInit.py。
+NNMakeDatasetの中にmakeDataset3.py。
+NNModelの中にNN.pyとVLSTM.py。
+preprocessの中に「cleandata」フォルダとPreprocessing.py。
+
+cleandataの中にsmoothing.py。
