@@ -1,0 +1,16 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python デバッガー: Main",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "C:/Users/Owner/Documents/A-shibaura/研究/source/VScode_source/車両速度予測_SUMO ver13.1/MVLSTMmain/MVLSTMmain.py",
+            "console": "integratedTerminal",
+            "stopOnEntry": true
+        }
+    ]
+}

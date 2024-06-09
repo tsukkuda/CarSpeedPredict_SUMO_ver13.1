@@ -94,6 +94,7 @@ class ReadPortalTemplate(metaclass=ABCMeta):
 
     def readMatrix_for_val(self,ADVrate):
         #検証用データ読み込み
+        #my dataと同じようにpklがあるか確認して読み込む 
         hp2 = HandlePickel(self.dataname,self.prePath,ADVrate=ADVrate)
         self.valdatalist = hp2.LoadPickelData2()#datalistに読み込んだデータを詰める。キャッシュが無いとNoneのまま。
         if self.valdatalist == None:#キャッシュが無い場合

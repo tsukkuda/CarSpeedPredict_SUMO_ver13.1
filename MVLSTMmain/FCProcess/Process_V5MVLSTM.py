@@ -78,9 +78,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     #オリジナルデータ訓練を平滑化する。欠損を全て補完してから平滑化を施し、同箇所を再欠損させる。
     preprocessed_original_data = DataPreprocessing3(normalized_original_data,MFwindow=hyper_parameter["median"])#オリジナル訓練データを平滑化
     
-    #Changed お試し
-    print(original_data_for_processing[0])
-    exit()
+    #? preprocessed_original_dataはどういう形なのか car_speed, avr_speed_R50, date(?)
 #===ここから検証データを正規化する=======================================================================
 
     valInset_list=[]        #検証用の入力データ用リスト

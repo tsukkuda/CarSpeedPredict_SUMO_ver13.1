@@ -273,6 +273,7 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     欠損値を含む入力データ・教師データを除外するように学習データを成型
     '''
     #1日当たりの必要学習データ数
+    #my //は商知らなかったわけじゃないんだ度忘れしてただけです～～
     need_data_num = whole_data//train_date
 
     #車のデータの日付が同じか判断する変数。
@@ -297,7 +298,7 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
                 traintemp.append(rawdata[i][j:j+maxlen,0:1]) #windowsize分のデータ長。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)。
                 targettemp.append(rawdata[i][j+maxlen+stepnum-1,0:1]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
-
+        
         #! ここから先動かない
         car_date = rawdata[i][0][2]#車データ取得の日付
 
@@ -452,7 +453,8 @@ def do_process(rawdata, maxlen, val_step, R_range):
     return valInput_list, valLabel_list
 
 class make_valData:
-
+    #my valDataの加工
+    
     def __init__(self,rawdata, maxlen, val_step,R_range):
         self.rawdata = rawdata
         self.maxlen = maxlen
