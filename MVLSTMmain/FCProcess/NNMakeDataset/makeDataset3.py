@@ -298,6 +298,7 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
                 targettemp.append(rawdata[i][j+maxlen+stepnum-1,0:1]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
 
+        #! ここから先動かない
         car_date = rawdata[i][0][2]#車データ取得の日付
 
         if car_date not in trainset_dict: #日付が初見だった場合

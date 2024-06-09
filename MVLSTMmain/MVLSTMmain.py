@@ -90,6 +90,7 @@ def main():
     print()
     print("===START Reading Process For Validation Data===")
 
+    #? ここよくわかんない検証用データって何ぞ
     original_valdata_list=[]#ADV比率毎に分かれた検証用データをリストで保持
     for rate in val_ADV_list:#比率でループ
         strategy_val = Glisan2loc20sec2hourResolution(window=1,ADVrate=rate)
@@ -112,7 +113,6 @@ def main():
 
 if __name__ == "__main__":
     print("test_branch")
-    print("test_branch_commit")
     main()
 
 

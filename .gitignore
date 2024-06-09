@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 #VScode workspace
 車両速度予測_SUMO ver13.1.code-workspace
+
+#log
+log.txt

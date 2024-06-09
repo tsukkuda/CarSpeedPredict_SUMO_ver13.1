@@ -59,6 +59,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     original_valdata_list_for_processing = copy.deepcopy(original_valdata_list)
     if len(data_list) > 0:
         #学習・交差検証用データに対する処理
+        #my ここで該当するRum_numの列を抽出している
         for i in range(len(original_data_for_processing)):
             original_data_for_processing[i] = original_data_for_processing[i].iloc[:,data_list]
 
@@ -76,7 +77,10 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     normalized_original_data,max_origin_data = Normarizing2(original_data_for_processing) #オリジナル訓練データ正規化
     #オリジナルデータ訓練を平滑化する。欠損を全て補完してから平滑化を施し、同箇所を再欠損させる。
     preprocessed_original_data = DataPreprocessing3(normalized_original_data,MFwindow=hyper_parameter["median"])#オリジナル訓練データを平滑化
-
+    
+    #Changed お試し
+    print(original_data_for_processing[0])
+    exit()
 #===ここから検証データを正規化する=======================================================================
 
     valInset_list=[]        #検証用の入力データ用リスト
