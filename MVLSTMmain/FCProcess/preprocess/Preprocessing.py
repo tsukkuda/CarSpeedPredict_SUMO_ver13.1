@@ -59,7 +59,7 @@ def DataPreprocessing3(ts_data,MFwindow):
     print("===FINISH Smoothing process===")
     return ts_data_maked
 
-#
+
 def Normarizing(ts_data):
     #TODO 20191103 最大値を保持する必要はないため要改善
     #平滑化データを正規化する
