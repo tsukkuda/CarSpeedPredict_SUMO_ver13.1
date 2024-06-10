@@ -122,6 +122,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #1入力1出力
         #剪定済み訓練データと訓練データ総数を返される
         trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力
+        #bookmark
         #学習と交差検証の実施
         train_func(trainset,trainLabset,whole_data,sample_size,
                    valInset_list,valLabset_list,valSampleSize_list,
