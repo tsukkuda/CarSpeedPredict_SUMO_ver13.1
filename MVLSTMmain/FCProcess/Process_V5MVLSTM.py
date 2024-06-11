@@ -23,6 +23,7 @@ import NNkeras.kerasInit as kInit
 import NNModel.VLSTM
 import NNModel.NN
 
+#? 次元ってなんだ1入力って使うのか
 model_Input_Output = 0 #1入力1出力学習と2入力2出力学習を切り替える変数。次元数をここで指定する。入力と出力の次元数は同じ。0なら1次元と2次元両方。
 
 def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_parameter, pred_step, stepnum, R_num):

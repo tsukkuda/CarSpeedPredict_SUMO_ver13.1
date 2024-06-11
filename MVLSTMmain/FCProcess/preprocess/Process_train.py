@@ -27,6 +27,7 @@ def train_func(trainset,trainLabset,whole_data,sample_size,valInset_list,valLabs
     print("必要学習データ数 : ",whole_data)
     print()
 
+    #[] 学習データ足りてない　　準備データ数 :  100 必要学習データ数 :  6000
     if sample_size < whole_data:
         need_data_size = round((whole_data/sample_size),2)
         print("学習データ不足です。約" , need_data_size , "倍以上のデータを用意してください。")
