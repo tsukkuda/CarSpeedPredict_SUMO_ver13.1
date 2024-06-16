@@ -21,6 +21,9 @@ FCProcess
 	-Process_V5MVLSTM.py
 ReadData
 	-TrackedCarData
+	-検証用車両データ
+		-ADV比率x割
+			xxxx.csv
 	-車両追跡データ
 		-xxxx.csv
 		-yyyy.csv

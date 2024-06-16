@@ -23,13 +23,16 @@ def main():
     #何ステップ先を予測するかを指定。閉ループ（再帰）予測を行う。
     pred_range = 2
 
+    #CHANGED Rの半径 SUMO確認して決める
     #Rの半径を連続処理。1から6の整数で選択。R_list[x]*50がRの半径の大きさとなる。
     #R_list =[1,2,3,4,5,6]
     R_list =[1]
 
+    #CHANGED ADV3割固定
     #検証に用いるデータの自動運転車両比率を配列で指定（単位[割]）
     #出力では割合に関わらず左から順にrate1,rate2,rate3...となるので、間違えないように注意
-    val_ADV_list = [1,2,3,4]
+    # val_ADV_list = [1,2,3,4]
+    val_ADV_list=[3]
 
     #Hyper-Parameter設定
     hyper_parameter = { "train_cut"      :0,            #テストデータの指定番目以降を使用してテストさせるか
@@ -38,7 +41,7 @@ def main():
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか
-                        "batch_size"     :10,          #重みの更新間隔をバッチ何個分ずつにするか
+                        "batch_size"     :1200,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドでは1200でやってるが...
                         "optimizer"      :"RMSprop"     #最適化関数をどれにするか
     }
     #window_size_list     = [30,60,120]
@@ -90,7 +93,6 @@ def main():
     print()
     print("===START Reading Process For Validation Data===")
 
-    #? ここよくわかんない検証用データって何ぞ
     original_valdata_list=[]#ADV比率毎に分かれた検証用データをリストで保持
     for rate in val_ADV_list:#比率でループ
         strategy_val = Glisan2loc20sec2hourResolution(window=1,ADVrate=rate)
