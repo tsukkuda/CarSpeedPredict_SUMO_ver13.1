@@ -111,6 +111,7 @@ class cross_validation:
                                             tensorboard_path=self.folder_path,
                                             model_Input_Output = self.model_Input_Output)
 
+    #? 110から120にしたほうがいいかもしれない おそらく最高速度
     def velify(self,validIn,validLab,val_mode):
         '''
         予測精度の検証
@@ -237,7 +238,7 @@ class cross_validation:
                 random.seed(1)#間引く用の乱数の種
                 cut_pred     = np.array(random.sample(pred.tolist(),20000))
             else:
-                cut_valLab1 = copy.deepcopy(valiLab1)
+                cut_valLab1 = copy.deepcopy(valLab1) #? valLab1のタイプミスか？
                 cut_pred = copy.deepcopy(pred)
             plt.scatter(cut_valLab1*110, cut_pred*110,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 110) #横軸の最小値最大値を指定
