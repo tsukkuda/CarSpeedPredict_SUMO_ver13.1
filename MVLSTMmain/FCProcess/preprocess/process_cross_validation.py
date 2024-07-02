@@ -122,10 +122,10 @@ class cross_validation:
         if len(pred[0])==1:#次元が1の場合
             loss = pred - validLab #予測誤差を計算
             square_loss = loss**2 #予測誤差の2乗を計算
-            MSE = np.mean(square_loss) #予測誤差の2乗平均を計算
+            MSE = np.nanmean(square_loss) #予測誤差の2乗平均を計算
             RMSE = np.sqrt(MSE)*110 #RMSEを計算
-            MAE = np.mean(np.sqrt(square_loss))*110 #MAEを計算
-            SDAE = np.sqrt(np.mean((MAE - loss)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
+            MAE = np.nanmean(np.sqrt(square_loss))*110 #MAEを計算
+            SDAE = np.sqrt(np.nanmean((MAE - loss)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
             if len(validLab)>20000:#データ数が20000を超える場合
@@ -149,10 +149,10 @@ class cross_validation:
         elif len(pred[0])==2:#次元が2の場合
             loss = pred - validLab #予測誤差を計算
             square_loss = loss**2 #予測誤差の2乗を計算
-            MSE = np.mean(square_loss,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
+            MSE = np.nanmean(square_loss,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
             RMSE = np.sqrt(MSE)*110 #RMSEを計算
-            MAE = np.mean(np.sqrt(square_loss),axis=0)*110 #MAEを計算
-            SDAE = np.sqrt(np.mean((MAE - loss)**2,axis=0)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
+            MAE = np.nanmean(np.sqrt(square_loss),axis=0)*110 #MAEを計算
+            SDAE = np.sqrt(np.nanmean((MAE - loss)**2,axis=0)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
             if len(validLab)>20000:#データ数が20000を超える場合
