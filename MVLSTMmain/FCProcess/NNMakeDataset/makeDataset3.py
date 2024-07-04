@@ -484,7 +484,9 @@ class make_valData:
             #indexを0から番号振り直し
             valLabel = valLabel.reset_index(drop=True)
 
-            if len(valInput)==5:
+            #?この5はなんだ？もしかしてwindow_sizeかもしれない
+            #CHANGED ということで一応15にしとく
+            if len(valInput)==self.maxlen:
                 #欠損値を線形補完
                 valInput = valInput.interpolate(limit_direction='both')
                 #全欠損の場合は'avr_speed_Rxx'に'car_speed'を代入
@@ -494,7 +496,7 @@ class make_valData:
                 #入力データ一つをnumpy化して結合
                 valInput_list.append(valInput.values)
                 #正解データ一つをnumpy化して結合
-                valLabel_list.append(valLabel.loc[[4], :].values)
+                valLabel_list.append(valLabel.loc[[self.maxlen-1], :].values)
 
         return valInput_list, valLabel_list
 
