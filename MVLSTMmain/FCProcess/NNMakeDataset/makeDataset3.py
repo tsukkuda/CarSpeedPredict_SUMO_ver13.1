@@ -485,7 +485,7 @@ class make_valData:
             valLabel = valLabel.reset_index(drop=True)
 
             #?この5はなんだ？もしかしてwindow_sizeかもしれない
-            #CHANGED ということで一応15にしとく
+            #CHANGED ↑ということで一応15にしとく
             if len(valInput)==self.maxlen:
                 #欠損値を線形補完
                 valInput = valInput.interpolate(limit_direction='both')

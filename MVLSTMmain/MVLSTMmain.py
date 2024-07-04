@@ -23,7 +23,7 @@ def main():
     #何ステップ先を予測するかを指定。閉ループ（再帰）予測を行う。
     pred_range = 2
 
-    #CHANGED Rの半径 SUMO確認して決める
+    #CHANGED Rの半径50m固定
     #Rの半径を連続処理。1から6の整数で選択。R_list[x]*50がRの半径の大きさとなる。
     #R_list =[1,2,3,4,5,6]
     R_list =[1]
@@ -37,7 +37,7 @@ def main():
     #Hyper-Parameter設定
     hyper_parameter = { "train_cut"      :0,            #テストデータの指定番目以降を使用してテストさせるか
                         "median"         :1,  #5        #メディアンフィルタ(平滑化)において、メディアンをとる長さ
-                        "window_len"     :15, #5       #学習における時系列データの窓長　#[x] あとで15にしとく
+                        "window_len"     :15, #5       #学習における時系列データの窓長　#CHANGED 15にしとく
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか

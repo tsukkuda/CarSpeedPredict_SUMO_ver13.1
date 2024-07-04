@@ -94,7 +94,7 @@ def Normarizing2(ts_data):
     #最大値リスト内の最大値を求める。自車速度と前方範囲平均の両方の中での最大値を求める。nanを含むリストなのでnanmaxを用いる。
     #ts_data_max = np.nanmax(array_ts_data_maxlist)
     #正規化に用いる最大値は交通流simで取り得る最高速度の値
-    ts_data_max = 110/3.66 #CHANGED 現在最高速度は第2走行車線が110km/km
+    ts_data_max = 120/3.66 #CHANGED 現在最高速度は第2走行車線が110km/km
 
     #最大値で生データを割って、正規化する。最大値が1となる。最小値は元々0。
     normarized_ts_data = [ts_data[i]/ts_data_max for i in range(len(ts_data))]

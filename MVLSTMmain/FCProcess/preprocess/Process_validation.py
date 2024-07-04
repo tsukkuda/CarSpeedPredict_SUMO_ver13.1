@@ -63,8 +63,8 @@ class final_validation:
             loss = pred - valLab1 #予測誤差を計算
             square_loss = loss**2 #予測誤差の2乗を計算
             MSE = np.nanmean(square_loss) #予測誤差の2乗平均を計算
-            RMSE = np.sqrt(MSE)*110 #RMSEを計算
-            MAE = np.nanmean(np.sqrt(square_loss))*110 #MAEを計算
+            RMSE = np.sqrt(MSE)*120 #RMSEを計算
+            MAE = np.nanmean(np.sqrt(square_loss))*120 #MAEを計算
             SDAE = np.sqrt(np.nanmean((MAE - loss)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
@@ -76,12 +76,12 @@ class final_validation:
             else:
                 cut_valLab1 = copy.deepcopy(valLab1)
                 cut_pred = copy.deepcopy(pred)
-            plt.scatter(cut_valLab1*110, cut_pred*110,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 110) #横軸の最小値最大値を指定
-            plt.ylim(0, 110) #縦軸の最小値最大値を指定
+            plt.scatter(cut_valLab1*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
+            plt.xlim(0, 120) #横軸の最小値最大値を指定
+            plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 110], [0, 110], color='r', lw=1) #対角線を赤で描画
+            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE,2))+' MAE:'+str(round(MAE,2))+' SDAE:'+str(round(SDAE,2))) #グラフタイトルを指定
             plt.savefig(result_path1 + val_mode + "_self.png")#グラフを保存
             plt.close()
@@ -91,8 +91,8 @@ class final_validation:
             loss2 = pred2 - valLab2 #予測誤差を計算
             square_loss2 = loss2**2 #予測誤差の2乗を計算
             MSE2 = np.nanmean(square_loss2) #予測誤差の2乗平均を計算
-            RMSE2 = np.sqrt(MSE2)*110 #RMSEを計算
-            MAE2 = np.nanmean(np.sqrt(square_loss2))*110 #MAEを計算
+            RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
+            MAE2 = np.nanmean(np.sqrt(square_loss2))*120 #MAEを計算
             SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
@@ -104,12 +104,12 @@ class final_validation:
             else:
                 cut_valLab2 = copy.deepcopy(valLab2)
                 cut_pred2 = copy.deepcopy(pred2)
-            plt.scatter(cut_valLab2*110, cut_pred2*110,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 110) #横軸の最小値最大値を指定
-            plt.ylim(0, 110) #縦軸の最小値最大値を指定
+            plt.scatter(cut_valLab2*120, cut_pred2*120,s=1) #プロットするデータとマーカーのサイズを指定
+            plt.xlim(0, 120) #横軸の最小値最大値を指定
+            plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 110], [0, 110], color='r', lw=1) #対角線を赤で描画
+            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE2,2))+' MAE:'+str(round(MAE2,2))+' SDAE:'+str(round(SDAE2,2))) #グラフタイトルを指定
             plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
             plt.close()
@@ -139,8 +139,8 @@ class final_validation:
             loss = pred - valLab1 #予測誤差を計算
             square_loss = loss**2 #予測誤差の2乗を計算
             MSE = np.nanmean(square_loss,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
-            RMSE = np.sqrt(MSE)*110 #RMSEを計算
-            MAE = np.nanmean(np.sqrt(square_loss),axis=0)*110 #MAEを計算
+            RMSE = np.sqrt(MSE)*120 #RMSEを計算
+            MAE = np.nanmean(np.sqrt(square_loss),axis=0)*120 #MAEを計算
             SDAE = np.sqrt(np.nanmean((MAE - loss)**2,axis=0)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
@@ -152,23 +152,23 @@ class final_validation:
             else:
                 cut_valLab1 = copy.deepcopy(valLab1)
                 cut_pred = copy.deepcopy(pred)
-            plt.scatter(cut_valLab1[:,0]*110, cut_pred[:,0]*110,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 110) #横軸の最小値最大値を指定
-            plt.ylim(0, 110) #縦軸の最小値最大値を指定
+            plt.scatter(cut_valLab1[:,0]*120, cut_pred[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
+            plt.xlim(0, 120) #横軸の最小値最大値を指定
+            plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 110], [0, 110], color='r', lw=1) #対角線を赤で描画
+            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE[0],2))+' MAE:'+str(round(MAE[0],2))+' SDAE:'+str(round(SDAE[0],2))) #グラフタイトルを指定
             plt.savefig(result_path1 + val_mode + "_self.png")#グラフを保存
             plt.close()
             # 散布図を描画
             print("Now drawing scatters...")
-            plt.scatter(cut_valLab1[:,1]*110, cut_pred[:,1]*110,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 110) #横軸の最小値最大値を指定
-            plt.ylim(0, 110) #縦軸の最小値最大値を指定
+            plt.scatter(cut_valLab1[:,1]*120, cut_pred[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
+            plt.xlim(0, 120) #横軸の最小値最大値を指定
+            plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 110], [0, 110], color='r', lw=1) #対角線を赤で描画
+            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE[1],2))+' MAE:'+str(round(MAE[1],2))+' SDAE:'+str(round(SDAE[1],2))) #グラフタイトルを指定
             plt.savefig(result_path1 + val_mode + "_ahead.png")#グラフを保存
             plt.close()
@@ -178,8 +178,8 @@ class final_validation:
             loss2 = pred2 - valLab2 #予測誤差を計算
             square_loss2 = loss2**2 #予測誤差の2乗を計算
             MSE2 = np.nanmean(square_loss2,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
-            RMSE2 = np.sqrt(MSE2)*110 #RMSEを計算
-            MAE2 = np.nanmean(np.sqrt(square_loss2),axis=0)*110 #MAEを計算
+            RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
+            MAE2 = np.nanmean(np.sqrt(square_loss2),axis=0)*120 #MAEを計算
             SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2,axis=0)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
@@ -191,23 +191,23 @@ class final_validation:
             else:
                 cut_valLab2 = copy.deepcopy(valLab2)
                 cut_pred2 = copy.deepcopy(pred2)
-            plt.scatter(cut_valLab2[:,0]*110, cut_pred2[:,0]*110,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 110) #横軸の最小値最大値を指定
-            plt.ylim(0, 110) #縦軸の最小値最大値を指定
+            plt.scatter(cut_valLab2[:,0]*120, cut_pred2[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
+            plt.xlim(0, 120) #横軸の最小値最大値を指定
+            plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 110], [0, 110], color='r', lw=1) #対角線を赤で描画
+            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE2[0],2))+' MAE:'+str(round(MAE2[0],2))+' SDAE:'+str(round(SDAE2[0],2))) #グラフタイトルを指定
             plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
             plt.close()
             # 散布図を描画
             print("Now drawing scatters...")
-            plt.scatter(cut_valLab2[:,1]*110, cut_pred2[:,1]*110,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 110) #横軸の最小値最大値を指定
-            plt.ylim(0, 110) #縦軸の最小値最大値を指定
+            plt.scatter(cut_valLab2[:,1]*120, cut_pred2[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
+            plt.xlim(0, 120) #横軸の最小値最大値を指定
+            plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 110], [0, 110], color='r', lw=1) #対角線を赤で描画
+            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE2[1],2))+' MAE:'+str(round(MAE2[1],2))+' SDAE:'+str(round(SDAE2[1],2))) #グラフタイトルを指定
             plt.savefig(result_path2 + val_mode + "_ahead.png")#グラフを保存
             plt.close()
