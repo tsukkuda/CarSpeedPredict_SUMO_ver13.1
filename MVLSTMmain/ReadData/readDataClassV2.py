@@ -117,6 +117,9 @@ class ReadPortalTemplate(metaclass=ABCMeta):
         #この表記については、リスト内包表記で調べるか、リスト内包表記フォルダ内の.txt参照
         #return [pd.read_csv(pathname) for pathname in tqdm(dataPathlist)]
         
+        #bookmark ここが日付にかかわる部分?
+        #* ファイルの名前についてるやつが，日付として扱われる。
+        #* (53318114)1990log_data(2383).csvの場合 53318114が多分日付
         #内包表記を書き下した。
         res = []
         for pathname in tqdm(dataPathlist):
