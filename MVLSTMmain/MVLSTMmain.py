@@ -21,7 +21,8 @@ def main():
     dt_st = datetime.datetime.now()
 
     #何ステップ先を予測するかを指定。閉ループ（再帰）予測を行う。
-    pred_range = 2
+    #CHANGED 直接6ステップ先の予測を行う
+    pred_range = 1
 
     #CHANGED Rの半径50m固定
     #Rの半径を連続処理。1から6の整数で選択。R_list[x]*50がRの半径の大きさとなる。
@@ -106,11 +107,11 @@ def main():
     #予測ステップ数を指定してシミュレーションを行う
     for hi in hyperparam_list:
         #1ステップずつずらして予測
-        #CHANGED 3ステップ後,15秒後のデータ予測
+        #CHANGED 6ステップ後,30秒後のデータ予測
         #bookmark stepnum変えてみる？
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
-                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=1,R_num=R_num)
+                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=6,R_num=R_num)
 
     dt_ed = datetime.datetime.now()
     print("time={}s".format(dt_ed-dt_st))

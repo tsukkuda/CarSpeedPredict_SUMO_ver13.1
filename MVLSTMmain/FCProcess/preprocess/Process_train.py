@@ -5,7 +5,7 @@ import numpy as np
 from process_cross_validation import cross_validation , cross_val
 from Process_validation import final_validation
 
-def train_func(trainset,trainLabset,whole_data,sample_size,valInset_list,valLabset_list,valSampleSize_list,hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range):
+def train_func(trainset,trainLabset,whole_data,sample_size,valInset_list,valLabset_list,valSampleSize_list,hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range,switch=True):
     #データ形式をnumpyに変形
     trainIn  = np.array(trainset)
     trainLab = np.array(trainLabset)
@@ -38,7 +38,8 @@ def train_func(trainset,trainLabset,whole_data,sample_size,valInset_list,valLabs
         trainLab = trainLab[:whole_data]
 
         #交差検証を行う(k-分割法：検証データ欠損なし)
-        cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range)
+        #CHANGED switch追加済
+        cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range,switch)
 
         #kerasGPU設定初期化(ここでGPUメモリ占有の設定を行う)
         kInit.kerasInit()
@@ -48,13 +49,18 @@ def train_func(trainset,trainLabset,whole_data,sample_size,valInset_list,valLabs
         #サンプル数不明のためバグ回避で1を指定
         train_eval = PredEval(sample_num=1,
                                 hyper_param=hyper_parameter)
-
+        #CHANGED switch追加済
         #結果を出力するフォルダを設定
-        learntype = str(model_Input_Output)+'D_'+'TrainData'+str(whole_data)+'_R'+str(R_range)  #モデルに使用したデータ数
+        if switch:
+            learntype = str(model_Input_Output)+'D_'+'TrainData'+str(whole_data)+'_R'+str(R_range)  #モデルに使用したデータ数
+        else:
+            learntype = str(model_Input_Output)+'D_'+'BETA_'+'TrainData'+str(whole_data)+'_R'+str(R_range)  #モデルに使用したデータ数
         #TODO 20191122 モデルの名前を書き換えずにモデルを変えてしまうと一貫性が崩れてしまうため要改善
         # modelname = 'RNN_Affine'  #モデルの名前は何か
         modelname = 'MVLSTM_Affine'  #モデルの名前は何か
         # modelname = 'GRU_Affine'  #モデルの名前は何か
+        
+        #bookmark ファイル名の意味知りたい人はここを見よう!
         train_eval.SetFolderpath(modelname=modelname,
                                     hyper_param=hyper_parameter,
                                     starttime=starttime,
@@ -76,27 +82,33 @@ def train_func(trainset,trainLabset,whole_data,sample_size,valInset_list,valLabs
 
 
         whole_data = len(trainIn) #訓練データの数
-        Final_Val = final_validation(hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,whole_data,model,R_range)
+        
+        #CHANGED switch追加済
+        Final_Val = final_validation(hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,whole_data,model,R_range,switch)
+        
         Final_Val.set_FolderPath()#出力先フォルダをセット
         #学習モデルの予測精度を検証データで検証
         RMSE_list=[]
         MAE_list=[]
         SDAE_list=[]
-        RMSE2_list=[]
-        MAE2_list=[]
-        SDAE2_list=[]
+        # RMSE2_list=[]
+        # MAE2_list=[]
+        # SDAE2_list=[]
         for index in range(len(valIn_list)):#用意した割合の種類分でループ
             rate = str(index + 1)
+            
             #学習モデルの本検証
-            RMSE,MAE,SDAE, RMSE2,MAE2,SDAE2 = Final_Val.Final_velify(valIn_list[index],valLab_list[index],"rate"+rate+"_val",model_Input_Output)
+            #CHANGED switch追加済
+            RMSE,MAE,SDAE = Final_Val.Final_velify(valIn_list[index],valLab_list[index],"rate"+rate+"_val",model_Input_Output,switch)
+            
             RMSE_list.append(RMSE)
             MAE_list.append(MAE)
             SDAE_list.append(SDAE)
-            RMSE2_list.append(RMSE2)
-            MAE2_list.append(MAE2)
-            SDAE2_list.append(SDAE2)
+            # RMSE2_list.append(RMSE2)
+            # MAE2_list.append(MAE2)
+            # SDAE2_list.append(SDAE2)
         #評価指標をまとめる
         valid_score = [RMSE_list,MAE_list,SDAE_list]
         Final_Val.make_valid_scores_csv(valid_score,"1") #検証の結果をまとめたcsvを書き出す
-        valid_score2 = [RMSE2_list,MAE2_list,SDAE2_list]
-        Final_Val.make_valid_scores_csv(valid_score2,"2") #検証の結果をまとめたcsvを書き出す
+        # valid_score2 = [RMSE2_list,MAE2_list,SDAE2_list]
+        # Final_Val.make_valid_scores_csv(valid_score2,"2") #検証の結果をまとめたcsvを書き出す

@@ -9,7 +9,7 @@ import csv
 import itertools
 import random
 
-def cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range):#(訓練データの入力,訓練データの教師データ)
+def cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range,switch=True):#(訓練データの入力,訓練データの教師データ)
 
     whole_data_origin = len(trainIn) #元々の訓練データの数
 
@@ -56,29 +56,30 @@ def cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,
         val_RMSE_list=[]
         val_MAE_list=[]
         val_SDAE_list=[]
-        val_RMSE2_list=[]
-        val_MAE2_list=[]
-        val_SDAE2_list=[]
+        # val_RMSE2_list=[]
+        # val_MAE2_list=[]
+        # val_SDAE2_list=[]
         for index in range(len(valIn_list)):#用意した割合の種類分でループ
             rate = str(index + 1)
-            val_RMSE,val_MAE,val_SDAE,val_RMSE2,val_MAE2,val_SDAE2 = Cross_Val.velify2(valIn_list[index],valLab_list[index],"rate"+rate+"_val",model_Input_Output)
+            #CHANGED switch追加済
+            val_RMSE,val_MAE,val_SDAE= Cross_Val.velify2(valIn_list[index],valLab_list[index],"rate"+rate+"_val",model_Input_Output,switch)
             val_RMSE_list.append(val_RMSE)
             val_MAE_list.append(val_MAE)
             val_SDAE_list.append(val_SDAE)
-            val_RMSE2_list.append(val_RMSE2)
-            val_MAE2_list.append(val_MAE2)
-            val_SDAE2_list.append(val_SDAE2)
+            # val_RMSE2_list.append(val_RMSE2)
+            # val_MAE2_list.append(val_MAE2)
+            # val_SDAE2_list.append(val_SDAE2)
 
         #評価指標をまとめる
         #1stepscore
         valid_score = [i+1,trainval_RMSE,trainval_MAE,trainval_SDAE,train_RMSE,train_MAE,train_SDAE,val_RMSE_list,val_MAE_list,val_SDAE_list]
         valid_scores.append(valid_score)
         #2stepscore
-        valid_score2 = [i+1,val_RMSE2_list,val_MAE2_list,val_SDAE2_list]
-        valid_scores2.append(valid_score2)
+        # valid_score2 = [i+1,val_RMSE2_list,val_MAE2_list,val_SDAE2_list]
+        # valid_scores2.append(valid_score2)
         
     Cross_Val.make_valid_scores_csv(valid_scores) #交差検証の結果をまとめたcsvを書き出す。
-    Cross_Val.make_valid_scores2_csv(valid_scores2) #交差検証の結果をまとめたcsvを書き出す。
+    # Cross_Val.make_valid_scores2_csv(valid_scores2) #交差検証の結果をまとめたcsvを書き出す。
 
 class cross_validation:
     
@@ -190,7 +191,7 @@ class cross_validation:
         pass
         return RMSE,MAE,SDAE #評価指標を返す
 
-    def velify2(self,validIn,validLab,val_mode,model_Input_Output):
+    def velify2(self,validIn,validLab,val_mode,model_Input_Output,switch):
         '''
         検証データでの予測精度の検証
         '''
@@ -202,27 +203,26 @@ class cross_validation:
         if not os.path.exists(result_path2):
             os.makedirs(result_path2)
         
-        if model_Input_Output==1:#次元が1の場合
-
+        if not switch:#* 前方平均速度を使う場合，どうせ2step予測は使わないから消しとく
             print("Now predicting for validation...")
-            valIn = np.delete(validIn, 1, 2)#前方平均の列を削除
+            valIn = np.delete(validIn, 0, 2)#前方平均の列を削除
             pred = self.model.predict(valIn)#1ステップ予測値を全て計算
 
-            for_merge = np.reshape(pred,(len(pred),1,1)) #結合に向けて次元変更
-            new_valIn = np.concatenate([valIn,for_merge],1) #新しい時系列を後ろに一つ結合
-            valIn2 = np.delete(new_valIn,0,1) #一番頭の古い時系列を一つ削除
+            # for_merge = np.reshape(pred,(len(pred),1,1)) #結合に向けて次元変更
+            # new_valIn = np.concatenate([valIn,for_merge],1) #新しい時系列を後ろに一つ結合
+            # valIn2 = np.delete(new_valIn,0,1) #一番頭の古い時系列を一つ削除
 
-            print("Now predicting for validation...")
-            pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
+            # print("Now predicting for validation...")
+            # pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
 
-            valLab1 = np.delete(validLab, 1, 2)#1列削除
-            valLab1 = np.delete(valLab1, 1, 2)#1列削除
-            valLab1 = np.delete(valLab1, 1, 2)#1列削除
+            valLab1 = np.delete(validLab, 0, 2)#1列削除
+            # valLab1 = np.delete(valLab1, 0, 2)#1列削除
+            # valLab1 = np.delete(valLab1, 0, 2)#1列削除
             valLab1 = valLab1.reshape(len(valLab1),1)#1stepの正解ラベル
-            valLab2 = np.delete(validLab, 0, 2)#1列削除
-            valLab2 = np.delete(valLab2, 0, 2)#1列削除
-            valLab2 = np.delete(valLab2, 1, 2)#1列削除
-            valLab2 = valLab2.reshape(len(valLab2),1)#2stepの正解ラベル
+            # valLab2 = np.delete(validLab, 0, 2)#1列削除
+            # valLab2 = np.delete(valLab2, 0, 2)#1列削除
+            # valLab2 = np.delete(valLab2, 1, 2)#1列削除
+            # valLab2 = valLab2.reshape(len(valLab2),1)#2stepの正解ラベル
 
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
@@ -253,31 +253,110 @@ class cross_validation:
             #===ここまで1step予測に対する評価処理===
 
             #===ここから2step予測に対する評価処理===
-            loss2 = pred2 - valLab2 #予測誤差を計算
-            square_loss2 = loss2**2 #予測誤差の2乗を計算
-            MSE2 = np.nanmean(square_loss2) #予測誤差の2乗平均を計算
-            RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
-            MAE2 = np.nanmean(np.sqrt(square_loss2))*120 #MAEを計算
-            SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
+            # loss2 = pred2 - valLab2 #予測誤差を計算
+            # square_loss2 = loss2**2 #予測誤差の2乗を計算
+            # MSE2 = np.nanmean(square_loss2) #予測誤差の2乗平均を計算
+            # RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
+            # MAE2 = np.nanmean(np.sqrt(square_loss2))*120 #MAEを計算
+            # SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
+            # # 散布図を描画
+            # print("Now drawing scatters...")
+            # if len(valLab2)>20000:#データ数が20000を超える場合
+            #     random.seed(1)#間引く用の乱数の種
+            #     cut_valLab2 = np.array(random.sample(valLab2.tolist(),20000))
+            #     random.seed(1)#間引く用の乱数の種
+            #     cut_pred2     = np.array(random.sample(pred2.tolist(),20000))
+            # else:
+            #     cut_valLab2 = copy.deepcopy(valLab2)
+            #     cut_pred2 = copy.deepcopy(pred2)
+            # plt.scatter(cut_valLab2*120, cut_pred2*120,s=1) #プロットするデータとマーカーのサイズを指定
+            # plt.xlim(0, 120) #横軸の最小値最大値を指定
+            # plt.ylim(0, 120) #縦軸の最小値最大値を指定
+            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
+            # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
+            # plt.title('RMSE:'+str(round(RMSE2,2))+' MAE:'+str(round(MAE2,2))+' SDAE:'+str(round(SDAE2,2))) #グラフタイトルを指定
+            # plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
+            # plt.close()
+            #===ここまで2step予測に対する評価処理===
+
+
+        elif model_Input_Output==1:#次元が1の場合
+
+            print("Now predicting for validation...")
+            valIn = np.delete(validIn, 1, 2)#前方平均の列を削除
+            pred = self.model.predict(valIn)#1ステップ予測値を全て計算
+
+            # for_merge = np.reshape(pred,(len(pred),1,1)) #結合に向けて次元変更
+            # new_valIn = np.concatenate([valIn,for_merge],1) #新しい時系列を後ろに一つ結合
+            # valIn2 = np.delete(new_valIn,0,1) #一番頭の古い時系列を一つ削除
+
+            # print("Now predicting for validation...")
+            # pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
+
+            valLab1 = np.delete(validLab, 1, 2)#1列削除
+            # valLab1 = np.delete(valLab1, 1, 2)#1列削除
+            # valLab1 = np.delete(valLab1, 1, 2)#1列削除
+            valLab1 = valLab1.reshape(len(valLab1),1)#1stepの正解ラベル
+            # valLab2 = np.delete(validLab, 0, 2)#1列削除
+            # valLab2 = np.delete(valLab2, 0, 2)#1列削除
+            # valLab2 = np.delete(valLab2, 1, 2)#1列削除
+            # valLab2 = valLab2.reshape(len(valLab2),1)#2stepの正解ラベル
+
+            #===ここから1step予測に対する評価処理===
+            loss = pred - valLab1 #予測誤差を計算
+            square_loss = loss**2 #予測誤差の2乗を計算
+            MSE = np.nanmean(square_loss) #予測誤差の2乗平均を計算
+            RMSE = np.sqrt(MSE)*120 #RMSEを計算
+            MAE = np.nanmean(np.sqrt(square_loss))*120 #MAEを計算
+            SDAE = np.sqrt(np.nanmean((MAE - loss)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
             # 散布図を描画
             print("Now drawing scatters...")
-            if len(valLab2)>20000:#データ数が20000を超える場合
+            if len(valLab1)>20000:#データ数が20000を超える場合
                 random.seed(1)#間引く用の乱数の種
-                cut_valLab2 = np.array(random.sample(valLab2.tolist(),20000))
+                cut_valLab1 = np.array(random.sample(valLab1.tolist(),20000))
                 random.seed(1)#間引く用の乱数の種
-                cut_pred2     = np.array(random.sample(pred2.tolist(),20000))
+                cut_pred     = np.array(random.sample(pred.tolist(),20000))
             else:
-                cut_valLab2 = copy.deepcopy(valLab2)
-                cut_pred2 = copy.deepcopy(pred2)
-            plt.scatter(cut_valLab2*120, cut_pred2*120,s=1) #プロットするデータとマーカーのサイズを指定
+                cut_valLab1 = copy.deepcopy(valLab1) #? valLab1のタイプミスか？
+                cut_pred = copy.deepcopy(pred)
+            plt.scatter(cut_valLab1*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
             plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
-            plt.title('RMSE:'+str(round(RMSE2,2))+' MAE:'+str(round(MAE2,2))+' SDAE:'+str(round(SDAE2,2))) #グラフタイトルを指定
-            plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
+            plt.title('RMSE:'+str(round(RMSE,2))+' MAE:'+str(round(MAE,2))+' SDAE:'+str(round(SDAE,2))) #グラフタイトルを指定
+            plt.savefig(result_path1 + val_mode + "_self.png")#グラフを保存
             plt.close()
+            #===ここまで1step予測に対する評価処理===
+
+            #===ここから2step予測に対する評価処理===
+            # loss2 = pred2 - valLab2 #予測誤差を計算
+            # square_loss2 = loss2**2 #予測誤差の2乗を計算
+            # MSE2 = np.nanmean(square_loss2) #予測誤差の2乗平均を計算
+            # RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
+            # MAE2 = np.nanmean(np.sqrt(square_loss2))*120 #MAEを計算
+            # SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
+            # # 散布図を描画
+            # print("Now drawing scatters...")
+            # if len(valLab2)>20000:#データ数が20000を超える場合
+            #     random.seed(1)#間引く用の乱数の種
+            #     cut_valLab2 = np.array(random.sample(valLab2.tolist(),20000))
+            #     random.seed(1)#間引く用の乱数の種
+            #     cut_pred2     = np.array(random.sample(pred2.tolist(),20000))
+            # else:
+            #     cut_valLab2 = copy.deepcopy(valLab2)
+            #     cut_pred2 = copy.deepcopy(pred2)
+            # plt.scatter(cut_valLab2*120, cut_pred2*120,s=1) #プロットするデータとマーカーのサイズを指定
+            # plt.xlim(0, 120) #横軸の最小値最大値を指定
+            # plt.ylim(0, 120) #縦軸の最小値最大値を指定
+            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
+            # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
+            # plt.title('RMSE:'+str(round(RMSE2,2))+' MAE:'+str(round(MAE2,2))+' SDAE:'+str(round(SDAE2,2))) #グラフタイトルを指定
+            # plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
+            # plt.close()
             #===ここまで2step予測に対する評価処理===
 
 
@@ -286,19 +365,17 @@ class cross_validation:
             valIn = validIn
             pred = self.model.predict(valIn)#予測値を全て計算
 
-            for_merge = np.reshape(pred,(len(pred),1,2)) #結合に向けて次元変更
-            new_valIn = np.concatenate([valIn,for_merge],1) #新しい時系列を後ろに一つ結合
-            valIn2 = np.delete(new_valIn,0,1) #一番頭の古い時系列を一つ削除
+            # for_merge = np.reshape(pred,(len(pred),1,2)) #結合に向けて次元変更
+            # new_valIn = np.concatenate([valIn,for_merge],1) #新しい時系列を後ろに一つ結合
+            # valIn2 = np.delete(new_valIn,0,1) #一番頭の古い時系列を一つ削除
 
-            print("Now predicting for validation...")
-            pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
+            # print("Now predicting for validation...")
+            # pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
 
-            valLab1 = np.delete(validLab, 2, 2)#1列削除
-            valLab1 = np.delete(valLab1, 2, 2)#1列削除
-            valLab1 = valLab1.reshape(len(valLab1),2)#1stepの正解ラベル
-            valLab2 = np.delete(validLab, 0, 2)#1列削除
-            valLab2 = np.delete(valLab2, 0, 2)#1列削除
-            valLab2 = valLab2.reshape(len(valLab2),2)#2stepの正解ラベル
+            valLab1 = validLab.reshape(len(validLab),2)#1stepの正解ラベル
+            # valLab2 = np.delete(validLab, 0, 2)#1列削除
+            # valLab2 = np.delete(valLab2, 0, 2)#1列削除
+            # valLab2 = valLab2.reshape(len(valLab2),2)#2stepの正解ラベル
 
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
@@ -340,49 +417,49 @@ class cross_validation:
             #===ここまで1step予測に対する評価処理===
 
             #===ここから2step予測に対する評価処理===
-            loss2 = pred2 - valLab2 #予測誤差を計算
-            square_loss2 = loss2**2 #予測誤差の2乗を計算
-            MSE2 = np.nanmean(square_loss2,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
-            RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
-            MAE2 = np.nanmean(np.sqrt(square_loss2),axis=0)*120 #MAEを計算
-            SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2,axis=0)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
-            # 散布図を描画
-            print("Now drawing scatters...")
-            if len(valLab2)>20000:#データ数が20000を超える場合
-                random.seed(1)#間引く用の乱数の種
-                cut_valLab2 = np.array(random.sample(valLab2.tolist(),20000))
-                random.seed(1)#間引く用の乱数の種
-                cut_pred2     = np.array(random.sample(pred2.tolist(),20000))
-            else:
-                cut_valLab2 = copy.deepcopy(valLab2)
-                cut_pred2 = copy.deepcopy(pred2)
-            plt.scatter(cut_valLab2[:,0]*120, cut_pred2[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 120) #横軸の最小値最大値を指定
-            plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
-            plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
-            plt.title('RMSE:'+str(round(RMSE2[0],2))+' MAE:'+str(round(MAE2[0],2))+' SDAE:'+str(round(SDAE2[0],2))) #グラフタイトルを指定
-            plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
-            plt.close()
-            # 散布図を描画
-            print("Now drawing scatters...")
-            plt.scatter(cut_valLab2[:,1]*120, cut_pred2[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
-            plt.xlim(0, 120) #横軸の最小値最大値を指定
-            plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
-            plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
-            plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
-            plt.title('RMSE:'+str(round(RMSE2[1],2))+' MAE:'+str(round(MAE2[1],2))+' SDAE:'+str(round(SDAE2[1],2))) #グラフタイトルを指定
-            plt.savefig(result_path2 + val_mode + "_ahead.png")#グラフを保存
-            plt.close()
+            # loss2 = pred2 - valLab2 #予測誤差を計算
+            # square_loss2 = loss2**2 #予測誤差の2乗を計算
+            # MSE2 = np.nanmean(square_loss2,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
+            # RMSE2 = np.sqrt(MSE2)*120 #RMSEを計算
+            # MAE2 = np.nanmean(np.sqrt(square_loss2),axis=0)*120 #MAEを計算
+            # SDAE2 = np.sqrt(np.nanmean((MAE2 - loss2)**2,axis=0)) #Standard Deviation Absolute Error 絶対誤差の標準偏差を計算
+            # # 散布図を描画
+            # print("Now drawing scatters...")
+            # if len(valLab2)>20000:#データ数が20000を超える場合
+            #     random.seed(1)#間引く用の乱数の種
+            #     cut_valLab2 = np.array(random.sample(valLab2.tolist(),20000))
+            #     random.seed(1)#間引く用の乱数の種
+            #     cut_pred2     = np.array(random.sample(pred2.tolist(),20000))
+            # else:
+            #     cut_valLab2 = copy.deepcopy(valLab2)
+            #     cut_pred2 = copy.deepcopy(pred2)
+            # plt.scatter(cut_valLab2[:,0]*120, cut_pred2[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
+            # plt.xlim(0, 120) #横軸の最小値最大値を指定
+            # plt.ylim(0, 120) #縦軸の最小値最大値を指定
+            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
+            # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
+            # plt.title('RMSE:'+str(round(RMSE2[0],2))+' MAE:'+str(round(MAE2[0],2))+' SDAE:'+str(round(SDAE2[0],2))) #グラフタイトルを指定
+            # plt.savefig(result_path2 + val_mode + "_self.png")#グラフを保存
+            # plt.close()
+            # # 散布図を描画
+            # print("Now drawing scatters...")
+            # plt.scatter(cut_valLab2[:,1]*120, cut_pred2[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
+            # plt.xlim(0, 120) #横軸の最小値最大値を指定
+            # plt.ylim(0, 120) #縦軸の最小値最大値を指定
+            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
+            # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
+            # plt.title('RMSE:'+str(round(RMSE2[1],2))+' MAE:'+str(round(MAE2[1],2))+' SDAE:'+str(round(SDAE2[1],2))) #グラフタイトルを指定
+            # plt.savefig(result_path2 + val_mode + "_ahead.png")#グラフを保存
+            # plt.close()
             #===ここまで2step予測に対する評価処理===
 
             
         else:
             print("Errorr of Scatter")
         pass
-        return RMSE,MAE,SDAE, RMSE2,MAE2,SDAE2#評価指標を返す
+        return RMSE,MAE,SDAE#評価指標を返す
 
 
 

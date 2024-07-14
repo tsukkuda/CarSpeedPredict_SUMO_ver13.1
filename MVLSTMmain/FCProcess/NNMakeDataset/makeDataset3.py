@@ -384,9 +384,9 @@ def VarStepVLSTMdataset6(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
             #入力データである自車速度と平均速度の15ステップ配列rawdata[i][j:j+maxlen]のどちらの縦列内にもNoneがない
             #かつ
             #教師データの自車速度rawdata[i][j+maxlen+stepnum,0]がNoneではない
-             if all(~np.isnan(rawdata[i][j:j+maxlen][:,:1]).any(axis=0)) and ~np.isnan(rawdata[i][j+maxlen+stepnum-1][1]): #(学習データ(自車速度の列のみ)判別 and 教師データ(自車速度の列・配列0番)判別)
-                traintemp.append(rawdata[i][j:j+maxlen,1:2]) #windowsize分のデータ長。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)。
-                targettemp.append(rawdata[i][j+maxlen+stepnum-1,1:2]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
+             if all(~np.isnan(rawdata[i][j:j+maxlen][:,1:2]).any(axis=0)) and ~np.isnan(rawdata[i][j+maxlen+stepnum-1][1]): #(学習データ(前方平均速度の列のみ)判別 and 教師データ(前方平均速度の列・配列1番)判別)
+                traintemp.append(rawdata[i][j:j+maxlen,1:2]) #windowsize分のデータ長。第1列自車速度なので除外。第3列は日付なので除外(,1:2)。
+                targettemp.append(rawdata[i][j+maxlen+stepnum-1,1:2]) #windowsizeデータのstep個分先のデータ。第1列自車速度なので除外。第3列は日付なので除外(,1:2)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
         
         #CHANGED エラーが出るため変更
@@ -439,17 +439,25 @@ def VarStepVLSTMdataset6(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     #学習データ、教師データ、データセット数を返す
     return trainset,targetset,total_sample_size
 
+
 def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list:
     """pandas.DataFrameを1行ずつズラシながら行数maxlenずつにスライスしてリストに入れて返す"""
     
-    #bookmarK val_step変えればいける気がしてきた
-    for i in range(val_step): #予測先各ステップの正解データの列を追加する。
-        num = i + 1
-        #カラム情報を1行上にずらしたデータフレームを作成する
-        df_shift = df.shift(-num)
-        #正解データの列を追加する
-        df['self_valLabel'+str(num)] = df_shift['car_speed'] #予測対象車両の速度列
-        df['ahead_valLabel'+str(num)] = df_shift['avr_speed_R'+R_range] #予測対象車両の速度列
+    #CHANGED val_step分のみあれば十分
+    #bookmark
+    # for i in range(val_step): #予測先各ステップの正解データの列を追加する。
+    #     num = i + 1
+    #     #カラム情報を1行上にずらしたデータフレームを作成する
+    #     df_shift = df.shift(-num)
+    #     #正解データの列を追加する
+    #     df['self_valLabel'+str(num)] = df_shift['car_speed'] #予測対象車両の速度列
+    #     df['ahead_valLabel'+str(num)] = df_shift['avr_speed_R'+R_range] #予測対象車両の速度列
+    num = (val_step-1) + 1
+    #カラム情報を1行上にずらしたデータフレームを作成する
+    df_shift = df.shift(-num)
+    #正解データの列を追加する
+    df['self_valLabel'+str(num)] = df_shift['car_speed'] #予測対象車両の速度列
+    df['ahead_valLabel'+str(num)] = df_shift['avr_speed_R'+R_range] #予測対象車両の速度列
 
 
     n = df.shape[0]
@@ -508,8 +516,8 @@ def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list
 #    return valInput_list, valLabel_list, total_sample_size
 
 #[x]
-#CHANGED
-def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=3):#(生データ,入力ステップ数,平滑化ステップ数,検証するステップ数,Rの半径)
+#val_step=1は多分デフォルトで，指定されればちゃんとそれになる(謎日本語)
+def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=1):#(生データ,入力ステップ数,平滑化ステップ数,検証するステップ数,Rの半径)
     '''
     検証データ形成プログラム
     欠損値を含む入力データは個別に補完。予測先ステップまでの各ステップを正解データとして検証データを成型
@@ -573,8 +581,9 @@ class make_valData:
             #indexを0から番号振り直し
             valInput = valInput.reset_index(drop=True)
 
-            #正解ラベルはステップ分、2次元分用意。現在2ステップ予測のみ対応
-            valLabel = dfs[k][['self_valLabel1','ahead_valLabel1','self_valLabel2','ahead_valLabel2']] 
+            #CHANGED 正解ラベルはステップ分、2次元分用意。現在6step後のみ
+            # valLabel = dfs[k][['self_valLabel1','ahead_valLabel1','self_valLabel2','ahead_valLabel2']] 
+            valLabel = dfs[k][['self_valLabel6','ahead_valLabel6']] 
             #indexを0から番号振り直し
             valLabel = valLabel.reset_index(drop=True)
 
