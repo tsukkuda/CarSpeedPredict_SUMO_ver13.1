@@ -26,6 +26,7 @@ import NNModel.NN
 
 model_Input_Output = 0 #1入力1出力学習と2入力2出力学習を切り替える変数。次元数をここで指定する。入力と出力の次元数は同じ。0なら1次元と2次元両方。
 
+#[x]
 def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_parameter, pred_step, stepnum, R_num):
     #このプログラムの開始時刻取得
     dt_now = datetime.datetime.now()
@@ -91,6 +92,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         normalized_original_valdata,max_origin_valdata = Normarizing2(original_valdata) #オリジナル検証データ正規化
 
         #検証データをLSTMの入力形式に変換する。入力データ個別に欠損補完が施される。
+        #*　ここでもう正解ラベルとかついてる
         valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=2)
 
         #リストにまとめる

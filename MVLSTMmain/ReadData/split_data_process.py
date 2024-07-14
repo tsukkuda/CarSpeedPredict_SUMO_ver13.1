@@ -4,7 +4,7 @@ import math
 from joblib import Parallel, delayed
 import ReadData.tqdm_joblib as tj
 
-
+#[x]
 def resolutionChange_func(speed,volume,window):
     def summerize_list(speed,volume,window_size):
         res = []
@@ -31,7 +31,7 @@ def resolutionChange_func(speed,volume,window):
     res = pd.DataFrame(dict_summerized)
     return res
 
-
+#[x]
 def split_data(i,df,window):
     loc_val = int(len(df.columns) - 2)
     res = {}
@@ -46,6 +46,7 @@ def split_data(i,df,window):
 
     return pd.DataFrame(res)
 
+#[x]
 def split_data_func(datalist,window):
        
     with tj.tqdm_joblib(len(datalist)):

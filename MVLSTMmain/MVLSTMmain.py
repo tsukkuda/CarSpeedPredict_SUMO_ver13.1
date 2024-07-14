@@ -106,6 +106,7 @@ def main():
     #予測ステップ数を指定してシミュレーションを行う
     for hi in hyperparam_list:
         #1ステップずつずらして予測
+        #CHANGED 3ステップ後,15秒後のデータ予測
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
                           starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=1,R_num=R_num)

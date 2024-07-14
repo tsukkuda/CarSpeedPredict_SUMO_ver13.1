@@ -271,6 +271,7 @@ def VarStepVLSTMdataset4(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
             print("Error   : Insufficient data : ", len(np.concatenate(trainset_dict[date],axis=0)))
     return trainset,targetset,total_sample_size
 
+#[x]
 def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生データ,学習データステップ数,教師データのステップ数,所望学習データ数,所望学習日数)
     '''
     1入力1出力用学習データ形成プログラム
@@ -289,7 +290,10 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     total_sample_size = 0
     sub_sample_size = 0
     trainset_dict = {}#日付がキーの辞書。同じ日付のものを配列にまとめる。入力データ
+    
+    #bookmark stepnumで変えれるのでは
     targetset_dict = {}#日付がキーの辞書。同じ日付のものを配列にまとめる。教師データ
+    
     for i in range(len(rawdata)):
         sample_size = len(rawdata[i])-maxlen-stepnum
         traintemp,targettemp = [],[]
@@ -351,9 +355,10 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     #学習データ、教師データ、データセット数を返す
     return trainset,targetset,total_sample_size
 
+#[x]
 def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list:
     """pandas.DataFrameを1行ずつズラシながら行数maxlenずつにスライスしてリストに入れて返す"""
-    
+    #bookmark ここ大事そうval_stepを変えればできるのでは
     for i in range(val_step): #予測先各ステップの正解データの列を追加する。
         num = i + 1
         #カラム情報を1行上にずらしたデータフレームを作成する
@@ -418,7 +423,9 @@ def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list
 #    #入力データ、正解ラベルを返す
 #    return valInput_list, valLabel_list, total_sample_size
 
-def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=1):#(生データ,入力ステップ数,平滑化ステップ数,検証するステップ数,Rの半径)
+#[x]
+#CHANGED
+def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=3):#(生データ,入力ステップ数,平滑化ステップ数,検証するステップ数,Rの半径)
     '''
     検証データ形成プログラム
     欠損値を含む入力データは個別に補完。予測先ステップまでの各ステップを正解データとして検証データを成型
@@ -454,13 +461,15 @@ def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=1):#(生デー
     #入力データ、正解ラベル、検証データ数を返す
     return valInput_list, valLabel_list, total_sample_size
 
+#[x]
 def do_process(rawdata, maxlen, val_step, R_range):
     do = make_valData(rawdata, maxlen,val_step,R_range)
     valInput_list, valLabel_list = do.process_making()
     return valInput_list, valLabel_list
 
+#[x]
 class make_valData:
-    #my valDataの加工
+    #* valDataの加工
     
     def __init__(self,rawdata, maxlen, val_step,R_range):
         self.rawdata = rawdata
@@ -468,6 +477,7 @@ class make_valData:
         self.val_step = val_step
         self.R_range = str(R_range)
 
+    #[x]
     def process_making(self):
         valInput_list=[]
         valLabel_list=[]
