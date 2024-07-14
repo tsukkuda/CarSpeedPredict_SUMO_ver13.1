@@ -24,7 +24,8 @@ import NNModel.VLSTM
 import NNModel.NN
 
 
-model_Input_Output = 0 #1入力1出力学習と2入力2出力学習を切り替える変数。次元数をここで指定する。入力と出力の次元数は同じ。0なら1次元と2次元両方。
+model_Input_Output = 1 #1入力1出力学習と2入力2出力学習を切り替える変数。次元数をここで指定する。入力と出力の次元数は同じ。0なら1次元と2次元両方。
+switch=False #* 1入力1出力学習の学習データを自車速度(True)にするか、前方平均速度(False)にするか
 
 def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_parameter, pred_step, stepnum, R_num):
     #このプログラムの開始時刻取得
@@ -107,50 +108,83 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     #whole_data = 65536
     #whole_data = 150
     #whole_data = 15360 #256個60日
-    whole_data = 1200 #100個60日 #my 100個6日(seed10種) #CHANGED 一時的に変更中200個1日(seed6種)
+    whole_data = 6000 #100個60日 #CHANGED 100個6日(seed10種)
     #whole_data = 300
     #whole_data = 4000
     #学習したい日数
     #train_date = 3 #whole_data/train_dateが1日あたりに取得したい訓練データの個数。
-    train_date = 6 #my 1回のシミュレーションから取得したい訓練データの数。日数*seed種数  #CHANGED 一時的に変更中
+    train_date = 60 #CHANGED 1回のシミュレーションから取得したい訓練データの数。日数*seed種数
     #train_date = 40
 
     #オリジナルデータをLSTMの訓練データの形に変形する。Window_sizeステップずつに切り分けて教師データとセットにする。
     #ここで欠損のない訓練データの個数を数える
     #日付ごとの訓練データの個数をカウントして返してもらう
     #日付順に整列される
-    if model_Input_Output == 0: #1入力1出力と2入力2出力
-        #1入力1出力
-        #剪定済み訓練データと訓練データ総数を返される
-        trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力
-        #学習と交差検証の実施
-        train_func(trainset,trainLabset,whole_data,sample_size,
-                   valInset_list,valLabset_list,valSampleSize_list,
-                   hyper_parameter,stepnum,starttime,dt_now,1,R_range)
-        
-        #2入力2出力
-        #剪定済み訓練データと訓練データ総数を返される
-        trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
-        #学習と交差検証の実施
-        train_func(trainset,trainLabset,whole_data,sample_size,
-                   valInset_list,valLabset_list,valSampleSize_list,
-                   hyper_parameter,stepnum,starttime,dt_now,2,R_range)
+    if switch:
+        if model_Input_Output == 0: #1入力1出力と2入力2出力
+            #1入力1出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset_list,valLabset_list,valSampleSize_list,
+                       hyper_parameter,stepnum,starttime,dt_now,1,R_range)
 
-    elif model_Input_Output == 1: #1入力1出力
-        #剪定済み訓練データと訓練データ総数を返される
-        trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力        
-        #学習と交差検証の実施
-        train_func(trainset,trainLabset,whole_data,sample_size,
-                   valInset_list,valLabset_list,valSampleSize_list,
-                   hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range)
-    elif model_Input_Output == 2: #2入力2出力
-        #剪定済み訓練データと訓練データ総数を返される
-        trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
-        #学習と交差検証の実施
-        train_func(trainset,trainLabset,whole_data,sample_size,
-                   valInset,valLabset,valSampleSize,
-                   hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range)
-    else:
-        print("error:モデルの次元が不正です")
+            #2入力2出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset_list,valLabset_list,valSampleSize_list,
+                       hyper_parameter,stepnum,starttime,dt_now,2,R_range)
 
+        elif model_Input_Output == 1: #1入力1出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力        
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset_list,valLabset_list,valSampleSize_list,
+                       hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range)
+        elif model_Input_Output == 2: #2入力2出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset,valLabset,valSampleSize,
+                       hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range)
+        else:
+            print("error:モデルの次元が不正です")
+    else: #* 1入力1出力学習の学習データが前方平均速度になる
+        if model_Input_Output == 0: #1入力1出力と2入力2出力
+            #1入力1出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset6(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset_list,valLabset_list,valSampleSize_list,
+                       hyper_parameter,stepnum,starttime,dt_now,1,R_range)
 
+            #2入力2出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset_list,valLabset_list,valSampleSize_list,
+                       hyper_parameter,stepnum,starttime,dt_now,2,R_range)
+
+        elif model_Input_Output == 1: #1入力1出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset6(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力        
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset_list,valLabset_list,valSampleSize_list,
+                       hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range)
+        elif model_Input_Output == 2: #2入力2出力
+            #剪定済み訓練データと訓練データ総数を返される
+            trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
+            #学習と交差検証の実施
+            train_func(trainset,trainLabset,whole_data,sample_size,
+                       valInset,valLabset,valSampleSize,
+                       hyper_parameter,stepnum,starttime,dt_now,model_Input_Output,R_range)
+        else:
+            print("error:モデルの次元が不正です")

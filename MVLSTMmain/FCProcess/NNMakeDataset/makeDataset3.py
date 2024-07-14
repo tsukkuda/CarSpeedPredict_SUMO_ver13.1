@@ -277,7 +277,7 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     欠損値を含む入力データ・教師データを除外するように学習データを成型
     '''
     #1日当たりの必要学習データ数
-    #my //は商知らなかったわけじゃないんだ度忘れしてただけです～～
+    #my //は商 知らなかったわけじゃないんだ度忘れしてただけです～～
     need_data_num = whole_data//train_date
 
     #車のデータの日付が同じか判断する変数。
@@ -351,9 +351,94 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     #学習データ、教師データ、データセット数を返す
     return trainset,targetset,total_sample_size
 
+
+#* 追加したやつ
+def VarStepVLSTMdataset6(rawdata,maxlen,stepnum,whole_data,train_date):#(生データ,学習データステップ数,教師データのステップ数,所望学習データ数,所望学習日数)
+    '''
+    1入力1出力用学習データ形成プログラム (ただし前方車両の速度)
+    欠損値を含む入力データ・教師データを除外するように学習データを成型
+    '''
+    #1日当たりの必要学習データ数
+    #my //は商 知らなかったわけじゃないんだ度忘れしてただけです～～
+    need_data_num = whole_data//train_date
+
+    #車のデータの日付が同じか判断する変数。
+    judge_date = -1
+
+    #DataFrame型からlist型に変換
+    trainset,targetset = [],[]#学習データ数を確定してから1日分をこの配列に結合
+    trainset_sub,targetset_sub = [],[]#学習データを間引く前の1日分の学習データ
+    total_sample_size = 0
+    sub_sample_size = 0
+    trainset_dict = {}#日付がキーの辞書。同じ日付のものを配列にまとめる。入力データ
+    targetset_dict = {}#日付がキーの辞書。同じ日付のものを配列にまとめる。教師データ
+    for i in range(len(rawdata)):
+        sample_size = len(rawdata[i])-maxlen-stepnum
+        traintemp,targettemp = [],[]
+        new_sample_size = 0 #欠損無データを数える用
+        for j in range(sample_size):
+            #入力データである自車速度と平均速度の15ステップ配列rawdata[i][j:j+maxlen]のどちらの縦列内にもNoneがない
+            #かつ
+            #教師データの自車速度rawdata[i][j+maxlen+stepnum,0]がNoneではない
+             if all(~np.isnan(rawdata[i][j:j+maxlen][:,:1]).any(axis=0)) and ~np.isnan(rawdata[i][j+maxlen+stepnum-1][1]): #(学習データ(自車速度の列のみ)判別 and 教師データ(自車速度の列・配列0番)判別)
+                traintemp.append(rawdata[i][j:j+maxlen,1:2]) #windowsize分のデータ長。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)。
+                targettemp.append(rawdata[i][j+maxlen+stepnum-1,1:2]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
+                new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
+        
+        #CHANGED エラーが出るため変更
+        #[x] rawdata[i][0][2]で"index 0 is out of bounds for axis 0 with size 0"がでる. i=7とか
+        #? この処理で大丈夫なのか？要検証
+        # if rawdata[i].size!=0:
+        #     car_date = rawdata[i][0][2]#車データ取得の日付
+            
+        car_date = rawdata[i][0][2]#車データ取得の日付
+
+        if car_date not in trainset_dict: #日付が初見だった場合
+            trainset_dict[car_date] = []#キーがその日付である空の配列を作成
+            targetset_dict[car_date] = []#キーがその日付である空の配列を作成
+        #学習データと教師データをappend。配列番号は必ず揃える。
+        trainset_dict[car_date].append(np.array(traintemp).reshape(new_sample_size,maxlen,rawdata[i].shape[1] - 2))#(学習データ数,入力ステップ数,入力次元数)
+        targetset_dict[car_date].append(np.array(targettemp).reshape(new_sample_size,rawdata[i].shape[1] - 2))#(学習データ数,出力次元数)
+
+
+    #この時点で辞書の中に、全ての車両データからの欠損の無いデータ学習データと教師データが抽出され、日付ごとに格納されている。
+    #各日の学習データを、指定された学習データ数に無作為に間引く。
+    for date in trainset_dict.keys():#日付でループを回す。
+        if len(np.concatenate(trainset_dict[date],axis=0)) >= need_data_num:#1日の学習データが足りていた場合
+            #学習データを1日分結合
+            cut_trainset = np.concatenate(trainset_dict[date],axis=0)
+            cut_targetset = np.concatenate(targetset_dict[date],axis=0)
+            print("Success : Sufficient data   : ", len(cut_trainset))
+            #間引くために一旦リスト型に変換。後でnumpy型に戻す
+            cut_trainset = cut_trainset.tolist()
+            cut_targetset = cut_targetset.tolist()
+
+            #seed値は日ごとに変えてもいいが、入力と教師データでは揃えないと、教師ラベルがズレる。
+            random.seed(0)
+            day_trainset = random.sample(cut_trainset,need_data_num)
+            random.seed(0)
+            day_targetset = random.sample(cut_targetset,need_data_num)
+
+            #間引いたのでnumpy型に戻す
+            day_trainset = np.array(day_trainset)
+            day_targetset = np.array(day_targetset)
+
+            #間引かれた学習データを確定して結合
+            trainset.extend(day_trainset)
+            targetset.extend(day_targetset)
+            total_sample_size = total_sample_size + len(day_trainset)
+
+        else:
+            total_sample_size = total_sample_size + len(np.concatenate(trainset_dict[date],axis=0))
+            print("Error   : Insufficient data : ", len(np.concatenate(trainset_dict[date],axis=0)))
+
+    #学習データ、教師データ、データセット数を返す
+    return trainset,targetset,total_sample_size
+
 def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list:
     """pandas.DataFrameを1行ずつズラシながら行数maxlenずつにスライスしてリストに入れて返す"""
     
+    #bookmarK val_step変えればいける気がしてきた
     for i in range(val_step): #予測先各ステップの正解データの列を追加する。
         num = i + 1
         #カラム情報を1行上にずらしたデータフレームを作成する
