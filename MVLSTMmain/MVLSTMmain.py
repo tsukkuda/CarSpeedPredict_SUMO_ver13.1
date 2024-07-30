@@ -42,7 +42,7 @@ def main():
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか
-                        "batch_size"     :1200,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
+                        "batch_size"     :1,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
                         "optimizer"      :"RMSprop"     #最適化関数をどれにするか
     }
     #window_size_list     = [30,60,120]

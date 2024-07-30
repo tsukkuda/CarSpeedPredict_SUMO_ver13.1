@@ -384,9 +384,9 @@ def VarStepVLSTMdataset6(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
             #入力データである自車速度と平均速度の15ステップ配列rawdata[i][j:j+maxlen]のどちらの縦列内にもNoneがない
             #かつ
             #教師データの自車速度rawdata[i][j+maxlen+stepnum,0]がNoneではない
-             if all(~np.isnan(rawdata[i][j:j+maxlen][:,1:2]).any(axis=0)) and ~np.isnan(rawdata[i][j+maxlen+stepnum-1][1]): #(学習データ(前方平均速度の列のみ)判別 and 教師データ(前方平均速度の列・配列1番)判別)
+             if all(~np.isnan(rawdata[i][j:j+maxlen][:,1:2]).any(axis=0)) and ~np.isnan(rawdata[i][j+maxlen+stepnum-1][0]): #(学習データ(前方平均速度の列のみ)判別 and 教師データ(自車速度の列・配列0番)判別)
                 traintemp.append(rawdata[i][j:j+maxlen,1:2]) #windowsize分のデータ長。第1列自車速度なので除外。第3列は日付なので除外(,1:2)。
-                targettemp.append(rawdata[i][j+maxlen+stepnum-1,1:2]) #windowsizeデータのstep個分先のデータ。第1列自車速度なので除外。第3列は日付なので除外(,1:2)
+                targettemp.append(rawdata[i][j+maxlen+stepnum-1,0:1]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
         
         #CHANGED エラーが出るため変更

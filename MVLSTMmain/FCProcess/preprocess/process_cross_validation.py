@@ -205,7 +205,7 @@ class cross_validation:
         
         if not switch:#* 前方平均速度を使う場合，どうせ2step予測は使わないから消しとく
             print("Now predicting for validation...")
-            valIn = np.delete(validIn, 0, 2)#前方平均の列を削除
+            valIn = np.delete(validIn, 0, 2)#自車速度の列を削除
             pred = self.model.predict(valIn)#1ステップ予測値を全て計算
 
             # for_merge = np.reshape(pred,(len(pred),1,1)) #結合に向けて次元変更
@@ -215,7 +215,7 @@ class cross_validation:
             # print("Now predicting for validation...")
             # pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
 
-            valLab1 = np.delete(validLab, 0, 2)#1列削除
+            valLab1 = np.delete(validLab, 1, 2)#1列削除
             # valLab1 = np.delete(valLab1, 0, 2)#1列削除
             # valLab1 = np.delete(valLab1, 0, 2)#1列削除
             valLab1 = valLab1.reshape(len(valLab1),1)#1stepの正解ラベル

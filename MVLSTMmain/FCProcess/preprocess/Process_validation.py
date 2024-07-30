@@ -51,7 +51,7 @@ class final_validation:
             # print("Now predicting for validation...")
             # pred2 = self.model.predict(valIn2)#2ステップ予測値を全て計算
 
-            valLab1 = np.delete(validLab, 0, 2)#1列削除
+            valLab1 = np.delete(validLab, 1, 2)#1列削除
             # valLab1 = np.delete(valLab1, 0, 2)#1列削除
             # valLab1 = np.delete(valLab1, 0, 2)#1列削除
             valLab1 = valLab1.reshape(len(valLab1),1)#1stepの正解ラベル

@@ -111,12 +111,12 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     #whole_data = 65536
     #whole_data = 150
     #whole_data = 15360 #256個60日
-    whole_data = 6000 #100個60日 #CHANGED 100個6日(seed10種)
+    whole_data = 100 #100個60日 #CHANGED 100個6日(seed10種)
     #whole_data = 300
     #whole_data = 4000
     #学習したい日数
     #train_date = 3 #whole_data/train_dateが1日あたりに取得したい訓練データの個数。
-    train_date = 60 #CHANGED 1回のシミュレーションから取得したい訓練データの数。日数*seed種数
+    train_date = 1 #CHANGED 1回のシミュレーションから取得したい訓練データの数。日数*seed種数
     #train_date = 40
 
     #オリジナルデータをLSTMの訓練データの形に変形する。Window_sizeステップずつに切り分けて教師データとセットにする。
