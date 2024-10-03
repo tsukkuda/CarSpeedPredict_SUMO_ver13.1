@@ -165,11 +165,11 @@ cython_debug/
 result/
 
 #多分いらないやつ
-ReadData/検証用車両追跡データ
+ReadData/検証用車両追跡データ*
 ReadData/試運転用TrackedCarData
 
 #車のデータ
-ReadData/車両追跡データ
+ReadData/車両追跡データ*
 ReadData/TrackedCarData/*.pkl
 
 

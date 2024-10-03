@@ -94,8 +94,8 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
 
         #検証データをLSTMの入力形式に変換する。入力データ個別に欠損補完が施される。
         #*　ここでもう正解ラベルとかついてる
-        #CHANGED val_Step=6つまり5s*6=30s後の結果入れてる
-        valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=6)
+        #CHANGED 5s*val_step s後の結果入れてる
+        valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=3)
 
         #リストにまとめる
         valInset_list.append(valInset)
@@ -111,7 +111,8 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     #whole_data = 65536
     #whole_data = 150
     #whole_data = 15360 #256個60日
-    whole_data = 100 #100個60日 #CHANGED 100個6日(seed10種)
+    whole_data = 1000 #100個60日 
+    #CHANGED 100個6日(seed10種)
     #whole_data = 300
     #whole_data = 4000
     #学習したい日数
@@ -129,7 +130,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #剪定済み訓練データと訓練データ総数を返される
         trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset6(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力        
         #学習と交差検証の実施
-        #! 訓練データは6step後のものを与えている。
+        #! 訓練データはstepnum後のものを与えている。
         train_func(trainset,trainLabset,whole_data,sample_size,
                    valInset_list,valLabset_list,valSampleSize_list,
                    hyper_parameter,1,starttime,dt_now,1,R_range,switch,)
@@ -140,7 +141,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #剪定済み訓練データと訓練データ総数を返される
         trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力
         #学習と交差検証の実施
-        #! 訓練データは6step後のものを与えている。
+        #! 訓練データはstepnum後のものを与えている。
         train_func(trainset,trainLabset,whole_data,sample_size,
                    valInset_list,valLabset_list,valSampleSize_list,
                    hyper_parameter,1,starttime,dt_now,1,R_range)
@@ -148,7 +149,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #剪定済み訓練データと訓練データ総数を返される
         trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
         #学習と交差検証の実施
-        #! 訓練データは6step後のものを与えている。
+        #! 訓練データはstepnum後のものを与えている。
         train_func(trainset,trainLabset,whole_data,sample_size,
                    valInset_list,valLabset_list,valSampleSize_list,
                    hyper_parameter,1,starttime,dt_now,2,R_range)
@@ -156,7 +157,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #剪定済み訓練データと訓練データ総数を返される
         trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset5(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #1入力1出力        
         #学習と交差検証の実施
-        #! 訓練データは6step後のものを与えている。
+        #! 訓練データはstepnum後のものを与えている。
         train_func(trainset,trainLabset,whole_data,sample_size,
                    valInset_list,valLabset_list,valSampleSize_list,
                    hyper_parameter,1,starttime,dt_now,model_Input_Output,R_range)
@@ -164,7 +165,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #剪定済み訓練データと訓練データ総数を返される
         trainset,trainLabset,sample_size = mkdataset.VarStepVLSTMdataset4(preprocessed_original_data,hyper_parameter["window_len"],stepnum,whole_data,train_date) #2入力2出力
         #学習と交差検証の実施
-        #! 訓練データは6step後のものを与えている。
+        #! 訓練データはstepnum後のものを与えている。
         train_func(trainset,trainLabset,whole_data,sample_size,
                    valInset,valLabset,valSampleSize,
                    hyper_parameter,1,starttime,dt_now,model_Input_Output,R_range)

@@ -573,6 +573,7 @@ class make_valData:
     def process_making(self):
         valInput_list=[]
         valLabel_list=[]
+        num = (self.val_step -1) + 1
         #車1台分の全入力データdf
         dfs = slice_df(self.rawdata, self.maxlen, self.val_step, self.R_range)
         for k in range(len(dfs)):
@@ -582,8 +583,9 @@ class make_valData:
             valInput = valInput.reset_index(drop=True)
 
             #CHANGED 正解ラベルはステップ分、2次元分用意。現在6step後のみ
+            #! stepnum変えたらここも変更すること！
             # valLabel = dfs[k][['self_valLabel1','ahead_valLabel1','self_valLabel2','ahead_valLabel2']] 
-            valLabel = dfs[k][['self_valLabel6','ahead_valLabel6']] 
+            valLabel = dfs[k][['self_valLabel'+str(num),'ahead_valLabel'+str(num)]] 
             #indexを0から番号振り直し
             valLabel = valLabel.reset_index(drop=True)
 

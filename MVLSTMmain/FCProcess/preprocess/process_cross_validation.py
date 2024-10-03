@@ -9,6 +9,8 @@ import csv
 import itertools
 import random
 
+from IOChecker import IOChecker 
+
 def cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range,switch=True):#(訓練データの入力,訓練データの教師データ)
 
     whole_data_origin = len(trainIn) #元々の訓練データの数
@@ -141,7 +143,7 @@ class cross_validation:
             plt.scatter(cut_validLab*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE,2))+' MAE:'+str(round(MAE,2))+' SDAE:'+str(round(SDAE,2))) #グラフタイトルを指定
@@ -168,7 +170,7 @@ class cross_validation:
             plt.scatter(cut_validLab[:,0]*120, cut_pred[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE[0],2))+' MAE:'+str(round(MAE[0],2))+' SDAE:'+str(round(SDAE[0],2))) #グラフタイトルを指定
@@ -179,7 +181,7 @@ class cross_validation:
             plt.scatter(cut_validLab[:,1]*120, cut_pred[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE[1],2))+' MAE:'+str(round(MAE[1],2))+' SDAE:'+str(round(SDAE[1],2))) #グラフタイトルを指定
@@ -244,7 +246,7 @@ class cross_validation:
             plt.scatter(cut_valLab1*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE,2))+' MAE:'+str(round(MAE,2))+' SDAE:'+str(round(SDAE,2))) #グラフタイトルを指定
@@ -272,7 +274,7 @@ class cross_validation:
             # plt.scatter(cut_valLab2*120, cut_pred2*120,s=1) #プロットするデータとマーカーのサイズを指定
             # plt.xlim(0, 120) #横軸の最小値最大値を指定
             # plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             # plt.title('RMSE:'+str(round(RMSE2,2))+' MAE:'+str(round(MAE2,2))+' SDAE:'+str(round(SDAE2,2))) #グラフタイトルを指定
@@ -323,7 +325,7 @@ class cross_validation:
             plt.scatter(cut_valLab1*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE,2))+' MAE:'+str(round(MAE,2))+' SDAE:'+str(round(SDAE,2))) #グラフタイトルを指定
@@ -351,7 +353,7 @@ class cross_validation:
             # plt.scatter(cut_valLab2*120, cut_pred2*120,s=1) #プロットするデータとマーカーのサイズを指定
             # plt.xlim(0, 120) #横軸の最小値最大値を指定
             # plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             # plt.title('RMSE:'+str(round(RMSE2,2))+' MAE:'+str(round(MAE2,2))+' SDAE:'+str(round(SDAE2,2))) #グラフタイトルを指定
@@ -397,7 +399,7 @@ class cross_validation:
             plt.scatter(cut_valLab1[:,0]*120, cut_pred[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE[0],2))+' MAE:'+str(round(MAE[0],2))+' SDAE:'+str(round(SDAE[0],2))) #グラフタイトルを指定
@@ -408,7 +410,7 @@ class cross_validation:
             plt.scatter(cut_valLab1[:,1]*120, cut_pred[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
             plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             plt.title('RMSE:'+str(round(RMSE[1],2))+' MAE:'+str(round(MAE[1],2))+' SDAE:'+str(round(SDAE[1],2))) #グラフタイトルを指定
@@ -436,7 +438,7 @@ class cross_validation:
             # plt.scatter(cut_valLab2[:,0]*120, cut_pred2[:,0]*120,s=1) #プロットするデータとマーカーのサイズを指定
             # plt.xlim(0, 120) #横軸の最小値最大値を指定
             # plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             # plt.title('RMSE:'+str(round(RMSE2[0],2))+' MAE:'+str(round(MAE2[0],2))+' SDAE:'+str(round(SDAE2[0],2))) #グラフタイトルを指定
@@ -447,7 +449,7 @@ class cross_validation:
             # plt.scatter(cut_valLab2[:,1]*120, cut_pred2[:,1]*120,s=1) #プロットするデータとマーカーのサイズを指定
             # plt.xlim(0, 120) #横軸の最小値最大値を指定
             # plt.ylim(0, 120) #縦軸の最小値最大値を指定
-            # plt.xlabel("実測値", fontname="MS Gothic") # x 軸のラベルを設定する。
+            # plt.xlabel("真値", fontname="MS Gothic") # x 軸のラベルを設定する。
             # plt.ylabel("予測値", fontname="MS Gothic") # y 軸のラベルを設定する。
             # plt.plot([0, 120], [0, 120], color='r', lw=1) #対角線を赤で描画
             # plt.title('RMSE:'+str(round(RMSE2[1],2))+' MAE:'+str(round(MAE2[1],2))+' SDAE:'+str(round(SDAE2[1],2))) #グラフタイトルを指定

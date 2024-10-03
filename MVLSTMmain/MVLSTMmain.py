@@ -21,7 +21,7 @@ def main():
     dt_st = datetime.datetime.now()
 
     #何ステップ先を予測するかを指定。閉ループ（再帰）予測を行う。
-    #CHANGED 直接6ステップ先の予測を行う
+    #CHANGED 直接stepnum先の予測を行う
     pred_range = 1
 
     #CHANGED Rの半径50m固定
@@ -42,7 +42,7 @@ def main():
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか
-                        "batch_size"     :1,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
+                        "batch_size"     :60,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
                         "optimizer"      :"RMSprop"     #最適化関数をどれにするか
     }
     #window_size_list     = [30,60,120]
@@ -107,11 +107,11 @@ def main():
     #予測ステップ数を指定してシミュレーションを行う
     for hi in hyperparam_list:
         #1ステップずつずらして予測
-        #CHANGED 6ステップ後,30秒後のデータ予測
-        #bookmark stepnum変えてみる？
+        #CHANGED stepnum*5s後のデータ予測
+        #! stepnumとval_stepは同じにすること!
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
-                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=6,R_num=R_num)
+                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=3,R_num=R_num)
 
     dt_ed = datetime.datetime.now()
     print("time={}s".format(dt_ed-dt_st))
