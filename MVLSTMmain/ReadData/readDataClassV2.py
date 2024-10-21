@@ -156,8 +156,8 @@ class Glisan2loc20sec2hourResolution(ReadPortalTemplate):
         # self.dataPath = '20180213-20180619Glisan-Halsey2hourSV_20sec/*'
         #変更点 本当はクラス名から分けたほうがよさそう
         #! ファイル読み込み先のところ
-        self.dataPath = '車両追跡データ3/*'
-        self.valdataPath = '検証用車両追跡データ3/ADV比率'+str(ADVrate)+'割/*'
+        self.dataPath = '車両追跡データ/*'
+        self.valdataPath = '検証用車両追跡データ/ADV比率'+str(ADVrate)+'割/*'
         # 20秒ごとのデータを何個まとめるか指定
         self.window   = window   
 
