@@ -111,7 +111,7 @@ def main():
         #! stepnumとval_stepは同じにすること!
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
-                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=3,R_num=R_num)
+                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=6,R_num=R_num)
 
     dt_ed = datetime.datetime.now()
     print("time={}s".format(dt_ed-dt_st))

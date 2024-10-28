@@ -95,7 +95,8 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #検証データをLSTMの入力形式に変換する。入力データ個別に欠損補完が施される。
         #*　ここでもう正解ラベルとかついてる
         #CHANGED 5s*val_step s後の結果入れてる
-        valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=3)
+        #bookmark stepnumを変更したらここも変更すること
+        valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=6)
 
         #リストにまとめる
         valInset_list.append(valInset)
