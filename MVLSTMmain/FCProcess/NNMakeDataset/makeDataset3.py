@@ -363,7 +363,6 @@ def VarStepVLSTMdataset6(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     欠損値を含む入力データ・教師データを除外するように学習データを成型
     '''
     #1日当たりの必要学習データ数
-    #my //は商 知らなかったわけじゃないんだ度忘れしてただけです～～
     need_data_num = whole_data//train_date
 
     #車のデータの日付が同じか判断する変数。
