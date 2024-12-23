@@ -42,7 +42,7 @@ def main():
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか
-                        "batch_size"     :60,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
+                        "batch_size"     :128,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
                         "optimizer"      :"RMSprop"     #最適化関数をどれにするか
     }
     #window_size_list     = [30,60,120]
@@ -108,7 +108,7 @@ def main():
     for hi in hyperparam_list:
         #1ステップずつずらして予測
         #CHANGED stepnum*5s後のデータ予測
-        #! stepnumとval_stepは同じにすること!
+        #bookmark stepnumとval_stepは同じにすること!
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
                           starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=6,R_num=R_num)

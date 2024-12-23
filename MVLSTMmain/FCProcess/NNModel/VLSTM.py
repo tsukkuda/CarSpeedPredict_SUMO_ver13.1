@@ -44,7 +44,7 @@ def VLSTM_Affine(train,label,hyperparam,tensorboard_path):
 
         #誤差(損失)が前回のエポック時よりも大きくなった場合、学習を早く止める関数
         #patienceは、最低でも指定した値のエポックまでは学習する。その後は指定しなかった場合と同じ
-        early_stopping = EarlyStopping(monitor='val_loss',mode='min',patience=10,verbose=1)
+        early_stopping = EarlyStopping(monitor='val_loss',mode='min',patience=4,verbose=1)
 
         #最良のモデルを保存する
         model_path = tensorboard_path + "/bestmodel.hdf5"

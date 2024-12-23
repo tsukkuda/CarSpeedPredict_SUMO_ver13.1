@@ -9,6 +9,8 @@ import csv
 import itertools
 import random
 
+from Process_yasuz_validation import IOChecker, LimitLoss
+
 class final_validation:
     
     def __init__(self,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,whole_data,model,R_range,switch=True):
@@ -60,8 +62,15 @@ class final_validation:
             # valLab2 = np.delete(valLab2, 1, 2)#1列削除
             # valLab2 = valLab2.reshape(len(valLab2),1)#2stepの正解ラベル
 
+            #*IOChecker
+            IOChecker(valIn,pred,valLab1,result_path1)
+
+            #[] 区間外の評価はしないようにしたい めんどいね
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
+            
+            loss=LimitLoss(pred,valLab1) #*条件付きRMSE
+            
             square_loss = loss**2 #予測誤差の2乗を計算
             MSE = np.nanmean(square_loss) #予測誤差の2乗平均を計算
             RMSE = np.sqrt(MSE)*120 #RMSEを計算
@@ -87,6 +96,9 @@ class final_validation:
             plt.savefig(result_path1 + val_mode + "_self.png")#グラフを保存
             plt.close()
             #===ここまで1step予測に対する評価処理===
+            
+            #*IOChecker
+            IOChecker(valIn,pred,valLab1,result_path1)
 
             #===ここから2step予測に対する評価処理===
             # loss2 = pred2 - valLab2 #予測誤差を計算
@@ -139,8 +151,15 @@ class final_validation:
             # valLab2 = np.delete(valLab2, 1, 2)#1列削除
             # valLab2 = valLab2.reshape(len(valLab2),1)#2stepの正解ラベル
 
+            #*IOChecker
+            IOChecker(valIn,pred,valLab1,result_path1)
+
+
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
+            
+            loss=LimitLoss(pred,valLab1) #*条件付きRMSE
+            
             square_loss = loss**2 #予測誤差の2乗を計算
             MSE = np.nanmean(square_loss) #予測誤差の2乗平均を計算
             RMSE = np.sqrt(MSE)*120 #RMSEを計算
@@ -195,7 +214,6 @@ class final_validation:
             # plt.close()
             #===ここまで2step予測に対する評価処理===
 
-
         elif model_Input_Output==2:#次元が2の場合
             print("Now predicting for validation...")
             valIn = validIn
@@ -214,9 +232,15 @@ class final_validation:
             # valLab2 = np.delete(validLab, 0, 2)#1列削除
             # valLab2 = np.delete(valLab2, 0, 2)#1列削除
             # valLab2 = valLab2.reshape(len(valLab2),2)#2stepの正解ラベル
+            
+            #*IOChecker
+            IOChecker(valIn,pred,valLab1,result_path1)
 
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
+            
+            loss=LimitLoss(pred,valLab1) #*条件付きRMSE
+            
             square_loss = loss**2 #予測誤差の2乗を計算
             MSE = np.nanmean(square_loss,axis=0)#列ごとに平均 予測誤差の2乗平均を計算
             RMSE = np.sqrt(MSE)*120 #RMSEを計算

@@ -9,7 +9,7 @@ import csv
 import itertools
 import random
 
-from IOChecker import IOChecker 
+from Process_yasuz_validation import IOChecker 
 
 def cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range,switch=True):#(訓練データの入力,訓練データの教師データ)
 
@@ -226,6 +226,7 @@ class cross_validation:
             # valLab2 = np.delete(valLab2, 1, 2)#1列削除
             # valLab2 = valLab2.reshape(len(valLab2),1)#2stepの正解ラベル
 
+            
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
             square_loss = loss**2 #予測誤差の2乗を計算
