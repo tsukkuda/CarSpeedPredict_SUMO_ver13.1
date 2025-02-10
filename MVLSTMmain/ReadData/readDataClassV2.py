@@ -10,7 +10,6 @@ import numpy as np
 from tqdm import tqdm
 from ReadData.split_data_process import split_data_func
 
-#[x]
 class HandlePickel(object):
     def __init__(self,dataname,prepath,ADVrate=None):
         self.prePklPath = dataname
@@ -18,7 +17,6 @@ class HandlePickel(object):
         self.originPath = self.prePath+self.prePklPath+'/'+'originaldata.pkl'#訓練データのキャッシュ
         self.valoriginPath = self.prePath+self.prePklPath+'/'+'originalvaldata'+str(ADVrate)+'.pkl'#検証データのキャッシュ
 
-    #[x]
     def LoadPickelData(self):
         #pklファイルがある場合は、pklファイルから元データ読み込み
         #pklファイルがない場合は、元データが格納されているフォルダ内のcsvから読み込み、pklファイルを作成するメソッドを発火させるためにNoneを代入        
@@ -32,7 +30,6 @@ class HandlePickel(object):
         
         return datalist
 
-    #[x]
     def LoadPickelData2(self):
         #検証データに対する処理
         if not os.path.exists(self.valoriginPath):
@@ -44,7 +41,6 @@ class HandlePickel(object):
 
         return valdatalist
 
-    #[x]
     def DumpPickelData(self,datalist):
         #pklファイルを入れるためのフォルダを作る
         if not os.path.exists(self.prePath+self.prePklPath):
@@ -53,7 +49,6 @@ class HandlePickel(object):
         with open(self.originPath, 'wb') as originpkl:
             pickle.dump(datalist,originpkl)
 
-    #[x]
     def DumpPickelData2(self,datalist):
         #pklファイルを入れるためのフォルダを作る
         if not os.path.exists(self.prePath+self.prePklPath):
@@ -81,7 +76,6 @@ class ReadPortalTemplate(metaclass=ABCMeta):
     def __init__(self):
         raise NotImplementedError
 
-    #[x]
     def readMatrix(self):
         """
         Portalのcsvファイルを読み込む前に、Pickelにキャッシュがあるかどうか確認する
@@ -97,7 +91,6 @@ class ReadPortalTemplate(metaclass=ABCMeta):
                 print('Reading Original Data is failed.\n')
                 sys.exit(0)   
 
-    #[x]
     def readMatrix_for_val(self,ADVrate):
         #検証用データ読み込み
         #my dataと同じようにpklがあるか確認して読み込む 
@@ -110,7 +103,6 @@ class ReadPortalTemplate(metaclass=ABCMeta):
                 print('Reading Original Data for validation is failed.\n')
                 sys.exit(0) 
 
-    #[x]
     def readFileCSV(self,prePath,dataPath):
         """
         readMatrixのサブクラス
@@ -123,9 +115,9 @@ class ReadPortalTemplate(metaclass=ABCMeta):
         #この表記については、リスト内包表記で調べるか、リスト内包表記フォルダ内の.txt参照
         #return [pd.read_csv(pathname) for pathname in tqdm(dataPathlist)]
         
-        #bookmark ここが日付にかかわる部分?
+        #bookmark ここが日付にかかわる部分
         #* ファイルの名前についてるやつが，日付として扱われる。
-        #* (53318114)1990log_data(2383).csvの場合 53318114が多分日付
+        #* (53318114)1990log_data(2383).csvの場合 53318114が日付
         #内包表記を書き下した。
         res = []
         for pathname in tqdm(dataPathlist):
@@ -142,7 +134,6 @@ class ReadPortalTemplate(metaclass=ABCMeta):
     def getSpeedAll(self):
         raise NotImplementedError
 
-#[x]
 class Glisan2loc20sec2hourResolution(ReadPortalTemplate):
     def __init__(self,window,ADVrate=None):
         #Pickelを保存するフォルダの名前指定
@@ -290,7 +281,6 @@ class Glisan2loc20sec2hourResolution(ReadPortalTemplate):
         res = pd.DataFrame(dict_summerized)
         return res
 
-    #[x]
     #Glisan-Halsey(0.9km間)の20秒毎の全速度データを1日ごと16日分取得
     def getSpeedAll(self):
         print()
@@ -302,7 +292,6 @@ class Glisan2loc20sec2hourResolution(ReadPortalTemplate):
         #originはDataFrame型
         return origin
 
-    #[x]
     def getSpeedAll2(self):
         print()
         print("Now splitting the Time, ID, Position and Velocity from the Data")
@@ -313,20 +302,17 @@ class Glisan2loc20sec2hourResolution(ReadPortalTemplate):
         #originはDataFrame型
         return origin
 
-#[x]
 class ReadMatrixContext(object):
     #戦略を与える
     def __init__(self,strategy):
         self.strategy = strategy
 
-    #[x]
     def ReadSpdMatrixlist(self):
         self.strategy.readMatrix()
         res = self.strategy.getSpeedAll()
         #resはDataFrame型
         return res
-    
-    #[x]
+
     def ReadSpdMatrixlist2(self,ADVrate):
         self.strategy.readMatrix_for_val(ADVrate)
         res = self.strategy.getSpeedAll2()

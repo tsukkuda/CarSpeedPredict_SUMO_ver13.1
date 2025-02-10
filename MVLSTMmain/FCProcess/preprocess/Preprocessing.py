@@ -25,7 +25,6 @@ def DataPreprocessing2(ts_data,MFwindow):#線形補完も平滑化もしない�
 
     return ts_data
 
-#[x]
 def DataPreprocessing3(ts_data,MFwindow):
     #訓練データ平滑化 LI:線形補間,MF:メディアンフィルタ
     print()
@@ -83,7 +82,6 @@ def Normarizing(ts_data):
 
     return normarized_ts_data,ts_data_max
 
-#[x]
 def Normarizing2(ts_data):
     """
     正規化する。正規化データと正規化に利用した最大値をreturnする。

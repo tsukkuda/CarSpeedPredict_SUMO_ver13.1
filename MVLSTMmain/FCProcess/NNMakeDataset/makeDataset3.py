@@ -225,9 +225,6 @@ def VarStepVLSTMdataset4(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
                 targettemp.append(rawdata[i][j+maxlen+stepnum-1,0:2]) #windowsizeデータのstep個分先のデータ。第三列は日付なので除外(,0:2)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
 
-        #CHANGED エラーが出るため変更
-        #[x] rawdata[i][0][2]で"index 0 is out of bounds for axis 0 with size 0"がでる. i=7とか
-        #? この処理で大丈夫なのか？要検証
         if rawdata[i].size!=0:
             car_date = rawdata[i][0][2]#車データ取得の日付
 
@@ -271,7 +268,6 @@ def VarStepVLSTMdataset4(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
             print("Error   : Insufficient data : ", len(np.concatenate(trainset_dict[date],axis=0)))
     return trainset,targetset,total_sample_size
 
-#[x]
 def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生データ,学習データステップ数,教師データのステップ数,所望学習データ数,所望学習日数)
     '''
     1入力1出力用学習データ形成プログラム
@@ -291,7 +287,6 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
     sub_sample_size = 0
     trainset_dict = {}#日付がキーの辞書。同じ日付のものを配列にまとめる。入力データ
     
-    #bookmark stepnumで変えれるのでは
     targetset_dict = {}#日付がキーの辞書。同じ日付のものを配列にまとめる。教師データ
     
     for i in range(len(rawdata)):
@@ -307,9 +302,6 @@ def VarStepVLSTMdataset5(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
                 targettemp.append(rawdata[i][j+maxlen+stepnum-1,0:1]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
         
-        #CHANGED エラーが出るため変更
-        #[x] rawdata[i][0][2]で"index 0 is out of bounds for axis 0 with size 0"がでる. i=7とか
-        #? この処理で大丈夫なのか？要検証
         if rawdata[i].size!=0:
             car_date = rawdata[i][0][2]#車データ取得の日付
 
@@ -388,9 +380,6 @@ def VarStepVLSTMdataset6(rawdata,maxlen,stepnum,whole_data,train_date):#(生デ�
                 targettemp.append(rawdata[i][j+maxlen+stepnum-1,0:1]) #windowsizeデータのstep個分先のデータ。第2列前方平均速度なので除外。第3列は日付なので除外(,0:1)
                 new_sample_size = new_sample_size + 1 #欠損データを棄却したので、sample_sizeは元より小さくなっている。
         
-        #CHANGED エラーが出るため変更
-        #[x] rawdata[i][0][2]で"index 0 is out of bounds for axis 0 with size 0"がでる. i=7とか
-        #? この処理で大丈夫なのか？要検証
         # if rawdata[i].size!=0:
         #     car_date = rawdata[i][0][2]#車データ取得の日付
             
@@ -443,7 +432,6 @@ def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list
     """pandas.DataFrameを1行ずつズラシながら行数maxlenずつにスライスしてリストに入れて返す"""
     
     #CHANGED val_step分のみあれば十分
-    #bookmark
     # for i in range(val_step): #予測先各ステップの正解データの列を追加する。
     #     num = i + 1
     #     #カラム情報を1行上にずらしたデータフレームを作成する
@@ -514,7 +502,6 @@ def slice_df(df: pd.DataFrame, maxlen: int, val_step: int, R_range: str) -> list
 #    #入力データ、正解ラベルを返す
 #    return valInput_list, valLabel_list, total_sample_size
 
-#[x]
 #val_step=1は多分デフォルトで，指定されればちゃんとそれになる(謎日本語)
 def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=1):#(生データ,入力ステップ数,平滑化ステップ数,検証するステップ数,Rの半径)
     '''
@@ -552,13 +539,11 @@ def VarStepVLSTMdataset8(rawdata,maxlen,MFwindow,R_range,val_step=1):#(生デー
     #入力データ、正解ラベル、検証データ数を返す
     return valInput_list, valLabel_list, total_sample_size
 
-#[x]
 def do_process(rawdata, maxlen, val_step, R_range):
     do = make_valData(rawdata, maxlen,val_step,R_range)
     valInput_list, valLabel_list = do.process_making()
     return valInput_list, valLabel_list
 
-#[x]
 class make_valData:
     #* valDataの加工
     
@@ -568,7 +553,6 @@ class make_valData:
         self.val_step = val_step
         self.R_range = str(R_range)
 
-    #[x]
     def process_making(self):
         valInput_list=[]
         valLabel_list=[]
@@ -588,8 +572,6 @@ class make_valData:
             #indexを0から番号振り直し
             valLabel = valLabel.reset_index(drop=True)
 
-            #?この5はなんだ？もしかしてwindow_sizeかもしれない
-            #CHANGED ↑ということで一応15にしとく
             if len(valInput)==self.maxlen:
                 #欠損値を線形補完
                 valInput = valInput.interpolate(limit_direction='both')

@@ -38,7 +38,7 @@ def main():
     #Hyper-Parameter設定
     hyper_parameter = { "train_cut"      :0,            #テストデータの指定番目以降を使用してテストさせるか
                         "median"         :1,  #5        #メディアンフィルタ(平滑化)において、メディアンをとる長さ
-                        "window_len"     :15, #5       #学習における時系列データの窓長　#CHANGED 15にしとく
+                        "window_len"     :15, #5       #学習における時系列データの窓長
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか
@@ -111,7 +111,7 @@ def main():
         #bookmark stepnumとval_stepは同じにすること!
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
-                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=6,R_num=R_num)
+                          starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=2,R_num=R_num)
 
     dt_ed = datetime.datetime.now()
     print("time={}s".format(dt_ed-dt_st))

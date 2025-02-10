@@ -11,7 +11,6 @@ class SmoothingTemplate(metaclass=ABCMeta):
     def process(data,k):
         raise NotImplementedError
 
-    #[x]
     #型ごとに処理分岐
     def adapter(self,matrix,k):
         def DataFrame(matrix,k):
@@ -119,7 +118,6 @@ def MedianFilter(matrix,window_size=3):
 
     return res
 
-#[x]
 def LinearInterpolation(matrix,window_size=0):
     """
     Apply a Linear Interpolation
@@ -139,7 +137,6 @@ def LinearInterpolation(matrix,window_size=0):
 
     return res
 
-#[x]
 def MovingAverage(matrix,window_size=3):
     """
     Apply a Moving Avarage

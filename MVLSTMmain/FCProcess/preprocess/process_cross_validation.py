@@ -9,7 +9,7 @@ import csv
 import itertools
 import random
 
-from Process_yasuz_validation import IOChecker 
+from MVLSTMmain.FCProcess.preprocess.Process_limit_rmse import IOChecker 
 
 def cross_val(trainIn,trainLab,valIn_list,valLab_list,hyper_parameter,starttime,dt_now,stepnum,model_Input_Output,R_range,switch=True):#(訓練データの入力,訓練データの教師データ)
 
@@ -114,8 +114,6 @@ class cross_validation:
                                             tensorboard_path=self.folder_path,
                                             model_Input_Output = self.model_Input_Output)
 
-    #? 110から120にしたほうがいいかもしれない おそらく最高速度
-    #CHANGED ということで変更した
     def velify(self,validIn,validLab,val_mode):
         '''
         予測精度の検証
@@ -242,7 +240,7 @@ class cross_validation:
                 random.seed(1)#間引く用の乱数の種
                 cut_pred     = np.array(random.sample(pred.tolist(),20000))
             else:
-                cut_valLab1 = copy.deepcopy(valLab1) #? valLab1のタイプミスか？
+                cut_valLab1 = copy.deepcopy(valLab1)
                 cut_pred = copy.deepcopy(pred)
             plt.scatter(cut_valLab1*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定
@@ -321,7 +319,7 @@ class cross_validation:
                 random.seed(1)#間引く用の乱数の種
                 cut_pred     = np.array(random.sample(pred.tolist(),20000))
             else:
-                cut_valLab1 = copy.deepcopy(valLab1) #? valLab1のタイプミスか？
+                cut_valLab1 = copy.deepcopy(valLab1)
                 cut_pred = copy.deepcopy(pred)
             plt.scatter(cut_valLab1*120, cut_pred*120,s=1) #プロットするデータとマーカーのサイズを指定
             plt.xlim(0, 120) #横軸の最小値最大値を指定

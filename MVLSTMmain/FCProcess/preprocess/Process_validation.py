@@ -9,7 +9,7 @@ import csv
 import itertools
 import random
 
-from Process_yasuz_validation import IOChecker, LimitLoss
+from MVLSTMmain.FCProcess.preprocess.Process_limit_rmse import IOChecker, LimitLoss
 
 class final_validation:
     
@@ -43,7 +43,7 @@ class final_validation:
         
         if not switch:#* 前方平均速度を使う場合，どうせ2step予測は使わないから消しとく
             print("Now predicting for validation...")
-            valIn = np.delete(validIn, 0, 2)#[x]自車速度の列を削除
+            valIn = np.delete(validIn, 0, 2)#自車速度の列を削除
             pred = self.model.predict(valIn)#予測値を全て計算
 
             # for_merge = np.reshape(pred,(len(pred),1,1)) #結合に向けて次元変更
@@ -65,7 +65,6 @@ class final_validation:
             #*IOChecker
             IOChecker(valIn,pred,valLab1,result_path1)
 
-            #[] 区間外の評価はしないようにしたい めんどいね
             #===ここから1step予測に対する評価処理===
             loss = pred - valLab1 #予測誤差を計算
             

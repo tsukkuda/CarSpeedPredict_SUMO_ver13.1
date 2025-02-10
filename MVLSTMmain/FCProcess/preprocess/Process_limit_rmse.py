@@ -2,6 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+#*予測値と真値の差が40km/h以上の場合の入力値をグラフで出力する関数
 def IOChecker(valIn,pred,valLab1,folder_path): #入力値，予測値，真値, 出力先パス
     print("IOChecker start")
     
@@ -18,7 +19,7 @@ def IOChecker(valIn,pred,valLab1,folder_path): #入力値，予測値，真値, 
     if len(pred[0])==1: #1次元の場合
         for i,val in enumerate(pred):
             if i%1000 == 0:
-                if abs(val[0]*120 - valLab1[i][0]*120)>=40: #予測値と真値の差が40km/h以上の場合
+                if abs(val[0]*120 - valLab1[i][0]*120)>=40: #! 予測値と真値の差が40km/h以上の場合
                     fig,ax=plt.subplots(figsize=(10,10)) #画像サイズ
                     fig.set_figheight(5) #高さ調整
                     ax.tick_params(labelbottom=True, bottom=False) #x軸設定
@@ -50,7 +51,7 @@ def IOChecker(valIn,pred,valLab1,folder_path): #入力値，予測値，真値, 
     elif len(pred[0])==2: #2次元の場合
         for i,val in enumerate(pred):
             if i%1000 == 0:
-                if abs(val[0]*120 - valLab1[i][0]*120)>=40: #予測値と真値の差が40km/h以上の場合
+                if abs(val[0]*120 - valLab1[i][0]*120)>=40: #!予測値と真値の差が40km/h以上の場合
                     fig,ax=plt.subplots(figsize=(10,10)) #画像サイズ
                     fig.set_figheight(5) #高さ調整
                     ax.tick_params(labelbottom=True, bottom=False) #x軸設定
@@ -88,7 +89,7 @@ def IOChecker(valIn,pred,valLab1,folder_path): #入力値，予測値，真値, 
     
     print("IOChecker done")
 
-#* 条件を満たす値の場合にRMSEを計算する関数
+#* 条件(予測値<40km/hかつ真値<40km/h)を満たす値の場合にRMSEを計算する関数
 def LimitLoss(pred,valLab1): #予測値、真値
     limVal=40.0/120 #この値以下のRMSEは計算しない
     loss=[] #結果いれるやつ

@@ -25,9 +25,8 @@ import NNModel.NN
 
 
 model_Input_Output = 0 #1入力1出力学習と2入力2出力学習を切り替える変数。次元数をここで指定する。入力と出力の次元数は同じ。0なら1次元と2次元両方。
-switch=False #* 1入力1出力学習の学習データを自車速度(True)にするか、前方平均速度(False)にするか
+switch=False #* Falseの場合，前方平均速度のみの学習も行う
 
-#[x]
 def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_parameter, pred_step, stepnum, R_num):
     #このプログラムの開始時刻取得
     dt_now = datetime.datetime.now()
@@ -81,7 +80,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     #オリジナルデータ訓練を平滑化する。欠損を全て補完してから平滑化を施し、同箇所を再欠損させる。
     preprocessed_original_data = DataPreprocessing3(normalized_original_data,MFwindow=hyper_parameter["median"])#オリジナル訓練データを平滑化
     
-    #? preprocessed_original_dataはどういう形なのか car_speed, avr_speed_R50, date(?)
+    #? preprocessed_original_dataはどういう形なのか car_speed, avr_speed_R50, date
 #===ここから検証データを正規化する=======================================================================
 
     valInset_list=[]        #検証用の入力データ用リスト
@@ -96,7 +95,7 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
         #*　ここでもう正解ラベルとかついてる
         #CHANGED 5s*val_step s後の結果入れてる
         #bookmark stepnumを変更したらここも変更すること
-        valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=6)
+        valInset,valLabset,valSampleSize = mkdataset.VarStepVLSTMdataset8(normalized_original_valdata,hyper_parameter["window_len"],hyper_parameter["median"],R_range,val_step=2)
 
         #リストにまとめる
         valInset_list.append(valInset)
@@ -112,13 +111,12 @@ def ProcessMVLSTM(original_data, original_valdata_list, starttime, hyper_paramet
     #whole_data = 65536
     #whole_data = 150
     #whole_data = 15360 #256個60日
-    whole_data = 60000 #100個60日 
-    #CHANGED 1000個6日(seed10種)
+    whole_data = 60000 #* 1000個6日(seed10種) 60000
     #whole_data = 300
     #whole_data = 4000
     #学習したい日数
     #train_date = 3 #whole_data/train_dateが1日あたりに取得したい訓練データの個数。
-    train_date = 60 #CHANGED 1回のシミュレーションから取得したい訓練データの数。日数*seed種数
+    train_date = 60 #*1回のシミュレーションから取得したい訓練データの数。日数*seed種数 60
     #train_date = 40
 
     #オリジナルデータをLSTMの訓練データの形に変形する。Window_sizeステップずつに切り分けて教師データとセットにする。
