@@ -21,11 +21,11 @@ def main():
     dt_st = datetime.datetime.now()
 
     #何ステップ先を予測するかを指定。閉ループ（再帰）予測を行う。
-    #CHANGED 直接stepnum先の予測を行う
+    #CHANGED 直接stepnum先の予測を行うため，1固定
     pred_range = 1
 
-    #CHANGED Rの半径50m固定
     #Rの半径を連続処理。1から6の整数で選択。R_list[x]*50がRの半径の大きさとなる。
+    #CHANGED Rの半径50m固定
     #R_list =[1,2,3,4,5,6]
     R_list =[1]
 
@@ -42,7 +42,7 @@ def main():
                         "layerH_unit"    :30,           #隠れ層のニューロン(ユニット)の数
                         "dropout_rate"   :0.2,          #Dropoutにおいて何割ニューロンを非活性化させるか
                         "epoch"          :150,          #何周学習データを使って学習させるか
-                        "batch_size"     :128,          #重みの更新間隔をバッチ何個分ずつにするか #CHANGED 鉢嶺さんのスライドに合わせた 総数/5にしとく
+                        "batch_size"     :128,          #重みの更新間隔をバッチ何個分ずつにするか 総数/5にしとく
                         "optimizer"      :"RMSprop"     #最適化関数をどれにするか
     }
     #window_size_list     = [30,60,120]
