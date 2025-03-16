@@ -107,8 +107,8 @@ def main():
     #予測ステップ数を指定してシミュレーションを行う
     for hi in hyperparam_list:
         #1ステップずつずらして予測
-        #CHANGED stepnum*5s後のデータ予測
-        #bookmark stepnumとval_stepは同じにすること!
+        #CHANGED stepnum*5s(データサンプリング間隔)後のデータ予測
+        #bookmark stepnumとval_step（Process_V5MVLSTM.py 98行目）は同じ値ににすること!
         for R_num in R_list:
             ProcessMVLSTM(original_data=original_data, original_valdata_list=original_valdata_list,
                           starttime=dt_st, hyper_parameter=hi, pred_step=pred_range, stepnum=2,R_num=R_num)
